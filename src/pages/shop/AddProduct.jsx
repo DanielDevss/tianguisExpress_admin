@@ -1,20 +1,44 @@
 import {useForm} from "react-hook-form";
+import Swal from "sweetalert2";
 import Header from "../../components/Header";
+import IndiceNavegacion from "../../components/IndiceNavegacion";
+import { nav_nuevoProducto } from "../../utils/navegacionBreadcrumb";
 import { expRegs } from "../../utils/utils";
+import useProductos from "../../hooks/useProductos";
+
 const AddProduct = () => {
     
     const {register, handleSubmit, formState: {errors}} = useForm();
 
+    const {crearProducto} = useProductos();
+
     const handleSubmitForm = (data) => {
-        console.log(data)
+
+        const file = data.cover[0];
+        const fileName = file.name;
+        const fileExt = fileName.split(".")[fileName.split(".").length - 1];
+        const fileSize = file.size / 1000000;
+        console.log(fileExt);
+        if(fileSize > 1){
+            Swal.fire("Imagen no admitida", "La imagen es demasiado pesada, solo se admiten imagenes menores a 1MB", "warning");
+            return;
+        }
+        if(fileExt !== "jpg" && fileExt !== "png" && fileExt !== "jpeg"){
+            Swal.fire("Imagen no admitida", "El formato de la imagen no es admitido, solo se admiten jpeg, jpg y png", "warning");
+            return;
+        }
+        crearProducto({body: data});
     }
 
   return (
     <>
         <Header titulo={"Agrega un nuevo producto"}>Asegurate de rellenar los campos importantes</Header>
         
+        <IndiceNavegacion navegacion={nav_nuevoProducto} />
+
         <section>
-            <form className="row" onSubmit={handleSubmit(handleSubmitForm)} >
+            
+            <form className="row" onSubmit={handleSubmit(handleSubmitForm)} noValidate >
 
                 {/* NOTE SKU */}
                 <div className="col-md-6">
@@ -41,6 +65,7 @@ const AddProduct = () => {
                     <div className="mb-4">
                         <label className="fw-bold form-label">Categoría del producto *</label>
                         <select className="form-select" {...register("categoria", {required:true})}>
+                            <option value={""}>Selecciona una opción</option>
                             <option value={"Audio"}>Audio</option>
                             <option value={"Electronica"}>Electronica</option>
                             <option value={"Laptops"}>Laptops</option>
@@ -54,6 +79,7 @@ const AddProduct = () => {
                     <div className="mb-4">
                         <label className="fw-bold form-label">Subcategoria del producto *</label>
                         <select className="form-select" {...register("subcategoria", {required:true})}>
+                            <option value={""}>Selecciona una opción</option>
                             <option value={"Bocinas"}>Bocinas</option>
                             <option value={"Licuadoras"}>Licuadoras</option>
                             <option value={"Gamers"}>Gamers</option>
@@ -86,9 +112,9 @@ const AddProduct = () => {
                 <div className="col-md-6">
                     <div className="mb-4">
                         <label className="fw-bold form-label">Detalles del producto *</label>
-                        <textarea className="form-control" placeholder="Ingresa una descripcion o detalles del producto" {...register("detalles", {required:true, pattern: expRegs.parrafos})}></textarea>
+                        <textarea className="form-control" placeholder="Ingresa una descripcion o detalles del producto" {...register("detalles", {required:true})}></textarea>
                         <span className="text-danger">{errors.detalles?.type==="required" && "El campo detalles es obligatorio"}</span>
-                        <span className="text-danger">{errors.detalles?.type==="pattern" && "No puedes ingresar caracteres extraños en este campo"}</span>
+                        {/* <span className="text-danger">{errors.detalles?.type==="pattern" && "No puedes ingresar caracteres extraños en este campo"}</span> */}
                     </div>
                 </div>
                 
@@ -110,9 +136,7 @@ const AddProduct = () => {
                             <input placeholder="Ancho (cm)" type="number" className="form-control" {...register("ancho", {required: true})} />
                             <input placeholder="Alto (cm)" type="number" className="form-control" {...register("largo", {required: true})} />
                         </div>
-                        <span className="text-danger">{errors.alto?.type==="pattern" && "Todos las medidas de muebles son obligatorias"}</span>
-                        <span className="text-danger">{errors.ancho?.type==="pattern" && "Todos las medidas de muebles son obligatorias"}</span>
-                        <span className="text-danger">{errors.largo?.type==="pattern" && "Todos las medidas de muebles son obligatorias"}</span>
+                        <span className="text-danger">{(errors.alto?.type==="required" || errors.ancho?.type==="required" || errors.largo?.type==="required") && "Todos las medidas del producto son obligatorias"}</span>
                     </div>
                 </div>
 
@@ -121,10 +145,11 @@ const AddProduct = () => {
                     <div className="mb-4">
                         <label className="fw-bold form-label">Ingresa el alto, ancho y largo del empaque en ese orden *</label>
                         <div className="input-group">
-                            <input placeholder="Largo (cm)" type="number" className="form-control" {...register("emp_alto")} />
-                            <input placeholder="Ancho (cm)" type="number" className="form-control" {...register("emp_ancho")} />
-                            <input placeholder="Alto (cm)" type="number" className="form-control" {...register("emp_largo")} />
+                            <input placeholder="Largo (cm)" type="number" className="form-control" {...register("emp_alto", {required: true})} />
+                            <input placeholder="Ancho (cm)" type="number" className="form-control" {...register("emp_ancho", {required: true})} />
+                            <input placeholder="Alto (cm)" type="number" className="form-control" {...register("emp_largo", {required: true})} />
                         </div>
+                        <span className="text-danger">{(errors.emp_alto?.type==="required" || errors.emp_ancho?.type==="required" || errors.emp_largo?.type==="required") && "Todos las medidas del empaque son obligatorias"}</span>
                     </div>
                 </div>
 
@@ -132,7 +157,8 @@ const AddProduct = () => {
                 <div className="col-md-3">
                     <div className="mb-4">
                         <label className="fw-bold form-label">Precio de producto *</label>
-                        <input type="number" className="form-control" placeholder="Precio por unidad" {...register("precio")} />
+                        <input type="number" className="form-control" placeholder="Precio por unidad" {...register("precio", {required:true})} />
+                        <span className="text-danger">{errors.precio?.type==="required" && "El precio del producto es obligatorio."}</span>
                     </div>
                 </div>
                 
@@ -148,7 +174,8 @@ const AddProduct = () => {
                 <div className="col-md-6">
                     <div className="mb-4">
                         <label className="fw-bold form-label">Imagen del cover (Menor a 1MB) *</label>
-                        <input type="file" accept=".png, .jpg, .jpeg" className="form-control" {...register("cover")} />
+                        <input type="file" accept=".png, .jpg, .jpeg" className="form-control" {...register("cover", {required: true})} />
+                        <span className="text-danger">{errors.cover?.type==="required" && "Selecciona una imagen por favor"}</span>
                     </div>
                 </div>
 

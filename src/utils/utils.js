@@ -13,6 +13,14 @@ export const formatDate = ({datetime}) => {
     }
 }
 
+export const formatPriceMX = (monto) => {
+    return monto.toLocaleString("es-MX", {
+        style: "currency",
+        currency: "MXN",
+        minimunFractionDigits: 2,
+    });
+}
+
 export const expRegs = {
     codigos     : /^[a-zA-Z0-9.-]+$/,
     parrafos    : /^[a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ\s.-]+$/

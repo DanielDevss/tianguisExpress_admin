@@ -6,9 +6,9 @@ import Account from "./pages/Account"
 import Mailes from "./pages/Mailes"
 import SettingsWeb from "./pages/SettingsWeb"
 
-// import NewProduct from "./pages/shop/NewProduct"
 import AddProduct from "./pages/shop/AddProduct"
-
+import Productos from "./pages/shop/Productos"
+import Producto from "./pages/shop/Producto"
 
 import ShowMails from "./pages/mails/ShowMails"
 
@@ -26,6 +26,8 @@ const App = () => {
             <Route path="contenido" element={<SettingsWeb />} />
             {/* Elementos de tienda */}
             <Route path="nuevo-producto" element={<AddProduct />} />
+            <Route path="productos" element={<Productos />} />
+            <Route path="productos/:id" element={<Producto />} />
             {/* Elemntos de Mailes */}
             <Route path="/mostrar-suscritos/" element={<ShowMails />} />
         </Route>
