@@ -1,10 +1,10 @@
-import {useForm} from "react-hook-form";
 import Swal from "sweetalert2";
 import Header from "../../components/Header";
 import IndiceNavegacion from "../../components/IndiceNavegacion";
+import useProductos from "../../hooks/useProductos";
+import { useForm } from "react-hook-form";
 import { nav_nuevoProducto } from "../../utils/navegacionBreadcrumb";
 import { expRegs } from "../../utils/utils";
-import useProductos from "../../hooks/useProductos";
 
 const AddProduct = () => {
     
@@ -18,28 +18,32 @@ const AddProduct = () => {
         const fileName = file.name;
         const fileExt = fileName.split(".")[fileName.split(".").length - 1];
         const fileSize = file.size / 1000000;
+
         console.log(fileExt);
+        
         if(fileSize > 1){
             Swal.fire("Imagen no admitida", "La imagen es demasiado pesada, solo se admiten imagenes menores a 1MB", "warning");
             return;
         }
+        
         if(fileExt !== "jpg" && fileExt !== "png" && fileExt !== "jpeg"){
             Swal.fire("Imagen no admitida", "El formato de la imagen no es admitido, solo se admiten jpeg, jpg y png", "warning");
             return;
         }
+        
         crearProducto({body: data});
     }
+
 
   return (
     <>
         <Header titulo={"Agrega un nuevo producto"}>Asegurate de rellenar los campos importantes</Header>
         
         <IndiceNavegacion navegacion={nav_nuevoProducto} />
-
+        
         <section>
             
             <form className="row" onSubmit={handleSubmit(handleSubmitForm)} noValidate >
-
                 {/* NOTE SKU */}
                 <div className="col-md-6">
                     <div className="mb-4">

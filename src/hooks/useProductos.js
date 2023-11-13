@@ -18,6 +18,8 @@ const useProductos = () => {
         obtenerProductos()
     }, [])
 
+    // LINK CREAR PRODUCTO
+
     const crearProducto = async ({body}) => {
 
         console.log(body)
@@ -48,13 +50,14 @@ const useProductos = () => {
         })
         .then(respuesta => respuesta.json())
         .then((data) => {
-            console.log(data);
             navigate(`/productos/${data.id}`);
         })
         .catch(err => {
             console.log(err);
         })
     }
+    
+    // LINK ELIMINAR PRODUCTO
 
     const eliminarProducto = (id) => {
         Swal.fire({
@@ -66,12 +69,14 @@ const useProductos = () => {
             if(response.isConfirmed){
                 axios.post(`${url}controllers/controllers.productos.php?delete&id=${id}`)
                 .then(resultado => {
-                    console.log(resultado);
                     obtenerProductos();
+                    console.log(resultado);
                 })
             }
         })
     }
+
+    // LINK ESTADO
     
     const actualizarEstado = ({estado, id}) => {
         axios.post(`${url}controllers/controllers.productos.php?estado=${estado}&id=${id}`)
@@ -80,6 +85,8 @@ const useProductos = () => {
             console.log(respuesta)
         })
     }
+
+    // LINK DESTACAR
 
     const destacarProducto = ({destacar, id}) => {
         axios.post(`${url}controllers/controllers.productos.php?destacar=${destacar}&id=${id}`)

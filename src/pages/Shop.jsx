@@ -2,7 +2,7 @@
 import AccordionItem from '../components/AccordionItem'
 import CardAccordion from '../components/CardAccordion'
 
-import {FaRegSquarePlus, FaWarehouse, FaBagShopping} from 'react-icons/fa6'
+import {FaRegSquarePlus, FaWarehouse, FaBagShopping, FaFileInvoiceDollar} from 'react-icons/fa6'
 
 const Shop = () => {
   return (
@@ -21,8 +21,12 @@ const Shop = () => {
             Añade nuevos productos al inventario
           </CardAccordion>
           
-          <CardAccordion titulo="Productos" to="/productos" icono={<FaWarehouse />}>
+          <CardAccordion titulo="Productos" to="/productos" icono={<FaBagShopping />}>
             Gestión de productos
+          </CardAccordion>
+          
+          <CardAccordion titulo="Inventario" to="/inventario" icono={<FaWarehouse />}>
+            Gestiona tu inventario
           </CardAccordion>
       
         </AccordionItem>
@@ -30,7 +34,7 @@ const Shop = () => {
 
         <AccordionItem open={true} titulo={"Estado de ventas"} descripcion={"Revisa cuanto haz vendido y las ventas actuales"}>
 
-          <CardAccordion titulo="Estado de ventas" to="/estados-venta" icono={<FaBagShopping />}>
+          <CardAccordion titulo="Estado de ventas" to="/estados-venta" icono={<FaFileInvoiceDollar />}>
             Revisa el estado de ventas actuales
           </CardAccordion>
 

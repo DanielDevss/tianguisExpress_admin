@@ -2,15 +2,15 @@ import DataTable from "react-data-table-component"
 import useProductos from "../../hooks/useProductos"
 import CustomHeader from "./CustomHeader";
 import { formatPriceMX, formatDate } from "../../utils/utils";
-import {FaTrash, FaArrowUpRightFromSquare, FaStar} from "react-icons/fa6"
+import { FaTrash, FaArrowUpRightFromSquare, FaStar } from "react-icons/fa6"
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const url = import.meta.env.VITE_URL;
 
 const TableProductos = () => {
-
+    const [filterText, setFilterText] = useState('');
     const {productos, eliminarProducto, actualizarEstado, destacarProducto} = useProductos();
-
     const handleEstado = (e, id) => {
         const input = e.target;
         const estado = input.checked ? "activo" : "inactivo";
@@ -25,23 +25,28 @@ const TableProductos = () => {
     const columns = [
         {
             name: "Imagen",
-            cell: (row) => <img src={`${url}${row.cover}`} className="rounded-circle" width="50" />
+            cell: (row) => <img src={`${url}${row.cover}`} className="rounded-circle m-3 border shadow-sm" width="50" />,
+            sortable: true
         },
         {
             name: "SKU",
             selector: (row) => row.sku,
+            sortable: true
         },
         {
             name: "Producto",
             selector: (row) => row.titulo,
+            sortable: true
         },
         {
             name: "Precio",
             selector: (row) => formatPriceMX(row.precio),
+            sortable: true
         },
         {
             name: "Fecha creación",
             selector: (row) => formatDate({datetime: row.fecha}).date,
+            sortable: true
         },
         {
             name: "Publico",
@@ -51,7 +56,8 @@ const TableProductos = () => {
                         <input onInput={(e) => handleEstado(e, row.id)} type="checkbox" defaultChecked={row.estado === "activo" ? true : false} className="form-check-input" />
                     </div>
                 )
-            }
+            },
+            sortable: true
         },
         {
             name: "Acciones",
@@ -70,12 +76,24 @@ const TableProductos = () => {
                         </Link>
                     </div>
                 )
-            }
+            },
+            sortable:true
         }
     ]
 
+    const filteredProductos = productos.filter(
+        (producto) =>
+            producto.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
+            producto.nombre.toLowerCase().includes(filterText.toLowerCase())
+    );
+
+    const searchOnChange = (e) => {
+        setFilterText(e.target.value);
+    }
+
+
     return (
-        <DataTable title={<CustomHeader title="Productos registrados" />} columns={columns} pagination data={productos} />
+        <DataTable searchable title={<CustomHeader searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
     )
 }
 

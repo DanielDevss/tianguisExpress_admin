@@ -4,7 +4,7 @@ import useProducto from "../../hooks/useProducto";
 import { nav_producto } from "../../utils/navegacionBreadcrumb";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Modal } from "react-bootstrap";
-import { useState } from "react"
+import { useState, useRef } from "react";
 
 import "swiper/css"
 
@@ -12,19 +12,36 @@ const Producto = () => {
 
     const url = import.meta.env.VITE_URL;
     const [openModal, setOpenModal] = useState(false);
-    const {producto, imagenes, agregarImagen, eliminarImagen} = useProducto();
+    const {producto, imagenes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd} = useProducto();
 
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
 
+    const formulario = useRef();
+
+    const handleFormSubmit = () => {
+        const formData = new FormData(formulario.current);
+        actualizarProducto({body: formData});
+    }
+    
   return (
     <>
         <Header titulo={`Detalles de producto`}>{producto.titulo}</Header>
-        <IndiceNavegacion navegacion={nav_producto} />
+        <div className="d-flex align-items-center justify-content-between mb-3">
+
+            <IndiceNavegacion className={"mb-0"} navegacion={nav_producto} />
+
+            <button onClick={handleFormSubmit} className={`btn btn-primary ${estadoUpd && "disabled"}`}>
+                <span className={`${estadoUpd && "d-none"}`}>Aplicar cambios</span>
+                <span className={`spinner-border spinner-border-sm ${!estadoUpd && "d-none"}`}></span>
+            </button>
+
+        </div>
+
 
         <article>
-            <form>
-                
+
+            <form onSubmit={actualizarProducto} ref={formulario}>
                 
                 <fieldset className="row card flex-row p-4">
                     <legend>Informacion del producto</legend>
@@ -54,7 +71,7 @@ const Producto = () => {
                     </div>
                     <div className="col-6 mb-3">
                         <label className="fw-bold form-label">Titulo</label>
-                        <input type="titulo" className="form-control" defaultValue={producto.titulo} />
+                        <input type="text" name="titulo" className="form-control" defaultValue={producto.titulo} />
                     </div>
                     <div className="col-3 mb-3">
                         <label className="fw-bold form-label">SKU</label>

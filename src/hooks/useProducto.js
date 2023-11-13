@@ -11,6 +11,9 @@ const useProducto = () => {
     const [producto, setProducto] = useState({});
     const [imagenes, setImagenes] = useState([]);
     const [variantes, setVariantes] = useState([])
+    const [estadoUpd, setEstadoUpd] = useState(false);
+
+    // LINK DETALLES
 
     const obtenerDetalles = async() => {
         const {data} = await axios.get(`${url}controllers/controllers.productos.php?id=${id}`);
@@ -19,7 +22,28 @@ const useProducto = () => {
         setVariantes(variantes);
         setImagenes(imagenes)
     }
+
+    // LINK ACTUALIZAR PRODUCTO
+
+    const actualizarProducto = ({body}) => {
+        console.log("enviando...")
+        setEstadoUpd(true);
+        fetch(`${url}controllers/controllers.productos.php?update&id=${id}`, {
+            method: "POST",
+            body: body,
+        })
+        .then(respuesta => respuesta.json())
+        .then((data) => {
+            console.log(data);
+            setEstadoUpd(false)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
     
+    // LINK AGREGAR IMAGEN
+
     const agregarImagen = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -33,6 +57,8 @@ const useProducto = () => {
             obtenerDetalles();
         })
     }
+
+    // LINK ELIMINAR IMAGEN
 
     const eliminarImagen = (id) => {
         Swal.fire({
@@ -54,6 +80,8 @@ const useProducto = () => {
         })
     }
 
+    // LINK USEEFFECT
+
     useEffect(() => {
         const fetchData = async () => {
             const {data} = await axios.get(`${url}controllers/controllers.productos.php?id=${id}`);
@@ -67,6 +95,8 @@ const useProducto = () => {
 
     return {
         producto,
+        actualizarProducto,
+        estadoUpd,
         imagenes,
         variantes,
         agregarImagen,
