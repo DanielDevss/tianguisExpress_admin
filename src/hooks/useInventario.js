@@ -26,9 +26,18 @@ const useInventario = () => {
             console.error(err);
         })
     }
-
+    
     // LINK CREAR SALIDA
-
+    const crearSalida = async () => {
+        axios.post(`${url}controllers.operaciones.php?crear&operacion=salida`)
+        .then(respuesta => {
+            const {data} = respuesta;
+            navigate(`/inventario/salida/${data.id_operacion}`);
+        })
+        .catch(err => {
+            console.error(err);
+        })
+    }
     
     // LINK INICIALIZADORES
     useEffect(() => {
@@ -38,6 +47,7 @@ const useInventario = () => {
     return {
         inventario,
         crearEntrada,
+        crearSalida,
     }
 }
 

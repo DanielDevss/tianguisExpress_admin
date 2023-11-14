@@ -1,6 +1,7 @@
 import Header from "../../components/Header"
 import IndiceNavegacion from "../../components/IndiceNavegacion"
 import TableInventario from "../../components/tables/TableInventario"
+import TableMovimientos from "../../components/tables/TableMovimientos"
 import { StyleSheetManager } from "styled-components"
 import { Tab, Tabs } from "react-bootstrap"
 import { nav_inventario } from "../../utils/navegacionBreadcrumb"
@@ -8,7 +9,7 @@ import useInventario from "../../hooks/useInventario"
 
 const Inventario = () => {
 
-  const {crearEntrada} = useInventario();
+  const {crearEntrada, crearSalida} = useInventario();
 
   return (
     <div>
@@ -22,8 +23,14 @@ const Inventario = () => {
           </StyleSheetManager>
         </Tab>
         <Tab eventKey={"movimientos"} title="Moviemientos">
-          <button onClick={crearEntrada}>Crear entrada</button>
-          <button>Crear salida</button>
+          <div className="d-flex gap-1 my-3">
+            <button className="btn btn-primary fw-bold" onClick={crearEntrada}>Crear entrada</button>
+            <button className="btn btn-primary fw-bold" onClick={crearSalida}>Crear salida</button>
+          </div>
+
+          <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
+            <TableMovimientos sortActive={true} />
+          </StyleSheetManager>
         </Tab>
       </Tabs>
     </div>

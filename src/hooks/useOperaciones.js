@@ -6,6 +6,7 @@ const useOperaciones = () => {
 
     const {id} = useParams();
     const [productosMovimiento, setProductosMovimiento] = useState([]);  
+    const [operaciones, setOperaciones] = useState([]);
     const [operacion, setOperacion] = useState({});
 
     console.log(id);
@@ -23,6 +24,8 @@ const useOperaciones = () => {
         })
     }
 
+    // LINK OBTENER OPERACIONES
+
     const obtenerOperacion = () => {
         axios.get(`${url}controllers.operaciones.php?operacion&id=${id}`)
         .then(resultado => {
@@ -31,6 +34,18 @@ const useOperaciones = () => {
         })
         .catch(err => console.error(err)); 
     }
+
+    // LINK OBTENER OPERACIONES
+
+    const obtenerOperaciones = () => {
+        axios.get(`${url}controllers.operaciones.php`)
+        .then(resultado => {
+          const {data} = resultado;
+          setOperaciones(data);  
+        })
+    }
+
+    // LINK ACTUALIZAR OPERACION
 
     const actualizarOperacion = (data) =>{
         const formData = new FormData();
@@ -87,25 +102,17 @@ const useOperaciones = () => {
     // !SECTION
 
     useEffect(() => {
+        
         axios.get(`${url}controllers.operaciones.php?productos_movimiento&id=${id}`)
-        .then(respuesta => {
-            const {data} = respuesta;
-            console.log(respuesta)
-            if(respuesta.status == 200){
-                setProductosMovimiento(data);  
-            }
-        })
-        .catch(err => {
-            console.error(err)
-        });
+        .then(respuesta => setProductosMovimiento(respuesta.data)).catch(err => console.error(err));
 
         axios.get(`${url}controllers.operaciones.php?operacion&id=${id}`)
-        .then(resultado => {
-            console.log(resultado)
-            setOperacion(resultado.data)
-        })
-        .catch(err => console.error(err)); 
-    }, []);
+        .then(resultado => setOperacion(resultado.data)).catch(err => console.error(err)); 
+
+        axios.get(`${url}controllers.operaciones.php`)
+        .then(resultado => setOperaciones(resultado.data)).catch(err => console.error(err));
+
+    }, [id]);
 
     return {
         agregarProducto,
@@ -113,6 +120,7 @@ const useOperaciones = () => {
         quitarProducto,
         actualizarProducto,
         operacion,
+        operaciones,
         actualizarOperacion,
     }
 }

@@ -1,11 +1,10 @@
-import DataTable, {createTheme} from "react-data-table-component"
+import DataTable from "react-data-table-component"
 import CustomHeader from "./CustomHeader"
-import tableTheme from "../../utils/themeTables.js"
+import customStyles, {paginationOptions} from "../../utils/themeTables.js"
 import useInventario from "../../hooks/useInventario"
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
-createTheme('tableTheme', tableTheme);
+import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 
 const TableInventario = () => {
     
@@ -15,7 +14,7 @@ const TableInventario = () => {
     const columns = [
         {
             name: "ID Producto",
-            cell: (row) => <Link to={"/productos/" + row.id_producto}>{row.id_producto}</Link> ,
+            cell: (row) => <Link to={"/productos/" + row.id_producto}>{row.id_producto} <FaArrowUpRightFromSquare className="fs-5 ms-1 mb-1" /></Link> ,
             selector: (row) => row.id_producto,
             sortable: true
         },
@@ -43,7 +42,7 @@ const TableInventario = () => {
     const filterInventario = inventario.filter(model => model.variante.toLowerCase().includes(filterTable.toLowerCase()));
 
   return (
-    <DataTable theme="tableTheme" title={<CustomHeader searchOnChange={handleSearch} placeholder="Busca el modelo" title="Inventario de productos" />} btnAdd={false} columns={columns} pagination data={filterInventario} responsive />
+    <DataTable highlightOnHover customStyles={customStyles} paginationComponentOptions={paginationOptions} title={<CustomHeader searchOnChange={handleSearch} placeholder="Busca el modelo" title="Inventario de productos" />} btnAdd={false} columns={columns} pagination data={filterInventario} responsive />
   )
 }
 

@@ -5,6 +5,7 @@ import { formatPriceMX, formatDate } from "../../utils/utils";
 import { FaTrash, FaArrowUpRightFromSquare, FaStar } from "react-icons/fa6"
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import customStyles, { paginationOptions } from "../../utils/themeTables";
 
 const url = import.meta.env.VITE_URL;
 
@@ -26,7 +27,6 @@ const TableProductos = () => {
         {
             name: "Imagen",
             cell: (row) => <img src={`${url}${row.cover}`} className="rounded-circle m-3 border shadow-sm" width="50" />,
-            sortable: true
         },
         {
             name: "SKU",
@@ -54,10 +54,11 @@ const TableProductos = () => {
                 return(
                     <div className="form-check form-switch">
                         <input onInput={(e) => handleEstado(e, row.id)} type="checkbox" defaultChecked={row.estado === "activo" ? true : false} className="form-check-input" />
+                        <label className={row.estado !== "activo" && "text-muted"}>{row.estado === "activo" ? "Activado" : "Desactivado"}</label>
                     </div>
                 )
             },
-            sortable: true
+            sortable: true,
         },
         {
             name: "Acciones",
@@ -93,7 +94,7 @@ const TableProductos = () => {
 
 
     return (
-        <DataTable searchable title={<CustomHeader searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
+        <DataTable paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover searchable title={<CustomHeader searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
     )
 }
 

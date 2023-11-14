@@ -1,25 +1,39 @@
-export default {
-    pagination: {
-      rowsPerPage: 'Filas por página:',
-      rangeSeparator: 'de',
-      noRowsToShow: 'No hay filas para mostrar',
-      prev: 'Anterior',
-      next: 'Siguiente',
+export const paginationOptions = {
+	rowsPerPageText: 'Filas por página',
+	rangeSeparatorText: 'de',
+  selectAllRowsItem: true,
+  selectAllRowsItemText: 'Todos',
+}
+
+const customStyles = {
+  headRow: {
+    style: {
+      fontSize: "Arial",
+      borderBottom: 'solid 1px #ededed',
     },
-    toolbar: {
-      search: 'Buscar',
-      downloadCsv: 'Descargar CSV',
-      print: 'Imprimir',
-      viewColumns: 'Ver columnas',
-      filterTable: 'Filtrar tabla',
+  },
+  headCells: {
+    style: {
+      color: '#202124',
+      fontSize: '16px',
     },
-    filter: {
-      all: 'Todos',
-      title: 'FILTROS',
-      reset: 'REINICIAR',
+  },
+  rows: {
+    style:{
+      fontSize: '14px',
+      fontFamily: "Arial"
     },
-    viewColumns: {
-      title: 'Mostrar columnas',
-      titleAria: 'Mostrar/ocultar columnas',
+    highlightOnHoverStyle: {
+      borderBottomColor: '#FFFFFF',
+      borderRadius: '5px',
+      outline: '1px solid #FFFFFF',
     },
-  };
+  },
+  pagination: {
+    style: {
+      border: 'none',
+    },
+  },
+};
+
+export default customStyles
