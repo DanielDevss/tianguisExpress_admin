@@ -1,3 +1,4 @@
+// LINK PRODUCTOS
 export const nav_nuevoProducto = [
     {
         label: "Inicio",
@@ -39,5 +40,21 @@ export const nav_producto = [
         label: "Detalles de producto",
         to: "/productos/",
         estado: "active"
+    },
+]
+
+
+// LINK INVENTARIO
+
+export const nav_inventario = [
+    {
+        label: "Inicio",
+        to: "/",
+        estado: null,
+    },
+    {
+        label: "Inventario",
+        to: "/",
+        estado: "active",
     },
 ]

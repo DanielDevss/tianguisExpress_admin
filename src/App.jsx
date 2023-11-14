@@ -9,8 +9,12 @@ import SettingsWeb from "./pages/SettingsWeb"
 import AddProduct from "./pages/shop/AddProduct"
 import Productos from "./pages/shop/Productos"
 import Producto from "./pages/shop/Producto"
+import Inventario from "./pages/shop/Inventario"
+
 
 import ShowMails from "./pages/mails/ShowMails"
+import Operacion from "./pages/shop/Operacion"
+
 
 const App = () => {
 
@@ -28,8 +32,11 @@ const App = () => {
             <Route path="nuevo-producto" element={<AddProduct />} />
             <Route path="productos" element={<Productos />} />
             <Route path="productos/:id" element={<Producto />} />
+            <Route path="inventario" element={<Inventario />} />
+            <Route path="inventario/entrada/:id" element={<Operacion />} />
             {/* Elemntos de Mailes */}
             <Route path="/mostrar-suscritos/" element={<ShowMails />} />
+
         </Route>
     </Routes>
   

@@ -11,7 +11,9 @@ const Layout = () => {
       <section className="contenido">
       
         <main className="p-3">
+
           <Outlet />
+        
         </main>
       
       </section>
