@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 const url = import.meta.env.VITE_URL + 'controllers/';
 const useOperaciones = () => {
 
@@ -8,15 +9,16 @@ const useOperaciones = () => {
     const [productosMovimiento, setProductosMovimiento] = useState([]);  
     const [operaciones, setOperaciones] = useState([]);
     const [operacion, setOperacion] = useState({});
+    const [pending, setPending] = useState(true);
+    const [loadSaveOP, setLoadSaveOP] = useState(false);
+    const navigate = useNavigate();
 
-    console.log(id);
     // SECTION OPERACION
 
     const obtenerProductos = () => {
         axios.get(`${url}controllers.operaciones.php?productos_movimiento&id=${id}`)
         .then(respuesta => {
             const {data} = respuesta;
-            console.log(respuesta);
             setProductosMovimiento(data);  
         })
         .catch(err => {
@@ -29,7 +31,6 @@ const useOperaciones = () => {
     const obtenerOperacion = () => {
         axios.get(`${url}controllers.operaciones.php?operacion&id=${id}`)
         .then(resultado => {
-            console.log(resultado);
             setOperacion(resultado.data);
         })
         .catch(err => console.error(err)); 
@@ -45,9 +46,51 @@ const useOperaciones = () => {
         })
     }
 
+    // LINK AUTORIZAR OPERACION
+
+    const autorizarOperacion = async() => {
+        Swal.fire({
+            title: "¿Seguro deseas autorizar?",
+            text: "Una vez autorizada la operación no se podran hacer cambios.",
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Autorizar (Si)",
+            cancelButtonText: "Cancelar (No)",
+            icon: "question"
+        }).then(respuesta => {
+
+            if(respuesta.isConfirmed){
+
+                const formData = new FormData();
+                formData.append("nombre", "Juan Bartolome");
+                formData.append("operacion", operacion.operacion);
+                axios.post(`${url}controllers.operaciones.php?autorizar&id=${id}`, formData).then(respuesta => console.log(respuesta));
+                
+                Swal.fire({
+                    title: "Autorizado",
+                    timer: 1500,
+                    icon: "success",
+                    showConfirmButton: false
+                })
+
+                obtenerOperacion();
+                navigate("/inventario");
+
+            }else{
+                Swal.fire({
+                    title: "Cancelado",
+                    timer: 1500,
+                    icon: "error",
+                    showConfirmButton: false
+                });   
+            }
+        })
+    }
+
     // LINK ACTUALIZAR OPERACION
 
     const actualizarOperacion = (data) =>{
+        setLoadSaveOP(true);
         const formData = new FormData();
         formData.append("operador", data.operador);
         formData.append("proveedor", data.proveedor);
@@ -59,9 +102,14 @@ const useOperaciones = () => {
         .then(response => {
             if(response.status == 200){
                 obtenerOperacion();
+
+                setTimeout(() => {
+                    setLoadSaveOP(false);
+                    navigate("/inventario")
+                }, 1000);
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {console.error(err); setLoadSaveOP(false)});
     }
 
     // !SECTION
@@ -110,7 +158,7 @@ const useOperaciones = () => {
         .then(resultado => setOperacion(resultado.data)).catch(err => console.error(err)); 
 
         axios.get(`${url}controllers.operaciones.php`)
-        .then(resultado => setOperaciones(resultado.data)).catch(err => console.error(err));
+        .then(resultado => {setOperaciones(resultado.data);setPending(false)}).catch(err => console.error(err));
 
     }, [id]);
 
@@ -121,7 +169,10 @@ const useOperaciones = () => {
         actualizarProducto,
         operacion,
         operaciones,
+        pending,
         actualizarOperacion,
+        autorizarOperacion,
+        loadSaveOP,
     }
 }
 

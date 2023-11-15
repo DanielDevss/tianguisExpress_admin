@@ -8,10 +8,17 @@ const url = import.meta.env.VITE_URL;
 const useProductos = () => {
 
     const [productos, setProductos] = useState([]);
+    const [pending, setPending] = useState(true);
     const navigate = useNavigate();
-    const obtenerProductos = async () => {
-        const {data} = await axios.get(`${url}controllers/controllers.productos.php`);
-        setProductos(data)
+    const obtenerProductos = () => {
+        axios.get(`${url}controllers/controllers.productos.php`).then(response=>{
+            if(response.status == 200){
+                setTimeout(() => {
+                    setPending(false)
+                }, 1000)
+                setProductos(response.data)
+            }            
+        });
     }
 
     useEffect(() => {
@@ -98,6 +105,7 @@ const useProductos = () => {
 
     return {
         productos,
+        pending,
         crearProducto,
         eliminarProducto,
         actualizarEstado,

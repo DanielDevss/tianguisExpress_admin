@@ -6,23 +6,45 @@ import { FaTrash, FaArrowUpRightFromSquare, FaStar } from "react-icons/fa6"
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import customStyles, { paginationOptions } from "../../utils/themeTables";
-
+import LoaderContent from "../LoaderContent";
 const url = import.meta.env.VITE_URL;
 
 const TableProductos = () => {
+
+
     const [filterText, setFilterText] = useState('');
-    const {productos, eliminarProducto, actualizarEstado, destacarProducto} = useProductos();
+    const {productos, eliminarProducto, actualizarEstado, destacarProducto, pending} = useProductos();
+
     const handleEstado = (e, id) => {
         const input = e.target;
         const estado = input.checked ? "activo" : "inactivo";
         actualizarEstado({estado, id});
     }
 
+    const productosModificados = productos.map(producto => {
+        const { cover, detalles, mas_informacion, tipo_descuento, destacar, descuento, ...productoSinCamposNoDeseados } = producto;
+        const esDestacado = destacar === 1 ? "Destacado" : "No destacado";
+        const discount = descuento ? descuento : 0;
+
+        return {
+            ...productoSinCamposNoDeseados,
+            Descuento: discount,
+            Destacado: esDestacado,
+        };
+      });
+
     const handleDestacar = (value, id) => {
         const destacar = value == 0 ? 1 : 0;
         destacarProducto({destacar ,id});
     }
  
+    const optionsDownload = {
+        data: productosModificados,
+        filename: `Productos`,
+        sheetname: "Productos"
+    }
+
+
     const columns = [
         {
             name: "Imagen",
@@ -94,7 +116,7 @@ const TableProductos = () => {
 
 
     return (
-        <DataTable paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover searchable title={<CustomHeader searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
+        <DataTable progressPending={pending} progressComponent={<LoaderContent />} paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover searchable title={<CustomHeader downloadOptions={optionsDownload} searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
     )
 }
 

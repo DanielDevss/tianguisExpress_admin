@@ -5,11 +5,19 @@ import useInventario from "../../hooks/useInventario"
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
+import LoaderContent from "../LoaderContent.jsx"
 
 const TableInventario = () => {
     
-    const {inventario} = useInventario();
+    const {inventario, pending} = useInventario();
     const [filterTable, setFilterTable] = useState('');
+
+
+    const optionsDownload = {
+        data: inventario,
+        filename: "Reporte_inventario",
+        sheetname: "Reporte inventario"
+    }
 
     const columns = [
         {
@@ -42,7 +50,7 @@ const TableInventario = () => {
     const filterInventario = inventario.filter(model => model.variante.toLowerCase().includes(filterTable.toLowerCase()));
 
   return (
-    <DataTable highlightOnHover customStyles={customStyles} paginationComponentOptions={paginationOptions} title={<CustomHeader searchOnChange={handleSearch} placeholder="Busca el modelo" title="Inventario de productos" />} btnAdd={false} columns={columns} pagination data={filterInventario} responsive />
+    <DataTable progressPending={pending} progressComponent={<LoaderContent />} highlightOnHover customStyles={customStyles} paginationComponentOptions={paginationOptions} title={<CustomHeader downloadOptions={optionsDownload} searchOnChange={handleSearch} placeholder="Busca el modelo" title="Inventario de productos" />} btnAdd={false} columns={columns} pagination data={filterInventario} responsive />
   )
 }
 

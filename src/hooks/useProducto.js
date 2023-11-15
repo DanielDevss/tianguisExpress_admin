@@ -12,6 +12,7 @@ const useProducto = () => {
     const [imagenes, setImagenes] = useState([]);
     const [variantes, setVariantes] = useState([])
     const [estadoUpd, setEstadoUpd] = useState(false);
+    const [pending, setPending] = useState(true);
 
     // LINK DETALLES
 
@@ -35,7 +36,15 @@ const useProducto = () => {
         .then(respuesta => respuesta.json())
         .then((data) => {
             console.log(data);
-            setEstadoUpd(false)
+            setTimeout(() => {
+                setEstadoUpd(false)
+                Swal.fire({
+                    title: "Actualizado",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            }, 1500)
         })
         .catch(err => {
             console.log(err);

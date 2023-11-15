@@ -5,10 +5,17 @@ import { Link } from "react-router-dom";
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 import customStyles, {paginationOptions} from "../../utils/themeTables";
 import CustomHeader from "./CustomHeader";
-
+import LoaderContent from "../LoaderContent";
 
 const TableMovimientos = () => {
-    const {operaciones} = useOperaciones();
+
+    const {operaciones, pending} = useOperaciones();
+
+    const optionsDownload = {
+        data: operaciones,
+        filename: `MovimientosInventario`,
+        sheetname: "Operaciones"
+    }
 
     const columns = [
         {
@@ -51,7 +58,7 @@ const TableMovimientos = () => {
         }
     ]
     return (
-        <DataTable title={<CustomHeader title={"Movimientos en el inventario"} placeholder="Buscar Operacion" />} pagination paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover fixedHeader data={operaciones} columns={columns} />
+        <DataTable progressPending={pending} progressComponent={<LoaderContent />} title={<CustomHeader downloadOptions={optionsDownload} title={"Movimientos en el inventario"} placeholder="Buscar Operacion" />} pagination paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover fixedHeader data={operaciones} columns={columns} />
   )
 }
 

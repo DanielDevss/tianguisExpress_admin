@@ -8,11 +8,14 @@ const useInventario = () => {
     const navigate = useNavigate();
 
     const [inventario, setInventario] = useState([]);
+    const [pending, setPending] = useState(true);
 
     // LINK OBTENER INVENTARIO
     const obtenerInventario = async() => {
-        const {data} = await axios.get(`${url}controllers.inventario.php`);
-        setInventario(data);
+        axios.get(`${url}controllers.inventario.php`).then(response => {
+            setInventario(response.data);
+            setTimeout(setPending(false), 1000)
+        });
     }
 
     // LINK CREAR ENTRADA  
@@ -48,6 +51,7 @@ const useInventario = () => {
         inventario,
         crearEntrada,
         crearSalida,
+        pending,
     }
 }
 
