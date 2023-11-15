@@ -7,13 +7,16 @@ import {BsSearch} from "react-icons/bs"
 import { Modal } from "react-bootstrap";
 import {useForm} from "react-hook-form"
 import {MdOutlineClose} from "react-icons/md"
-import {FaPlus} from "react-icons/fa"
+import { FaClipboardCheck, FaPlus } from "react-icons/fa";
+import {Spinner} from "react-bootstrap";
+import { formatDate } from "../../utils/utils";
+import IndiceNavegacion from "../../components/IndiceNavegacion";
 
 const Operacion = () => {
     const [filtroText, setFiltroText] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const {inventario} = useInventario();
-    const {agregarProducto, productosMovimiento, actualizarProducto, quitarProducto, actualizarOperacion, operacion} = useOperaciones()
+    const {agregarProducto, productosMovimiento, actualizarProducto, quitarProducto, actualizarOperacion, operacion, autorizarOperacion, loadSaveOP} = useOperaciones()
     
     const handleFilter = (e) => setFiltroText(e.target.value);
 
@@ -22,18 +25,42 @@ const Operacion = () => {
     const handleCloseModal = () => setOpenModal(false);
 
     const formSubmit = (data) => actualizarOperacion(data);
+    const nav_operacion = [
+        {
+            label: "Inicio",
+            to: "/",
+            estado: null,
+        },
+        {
+            label: "Inventario",
+            to: "/inventario",
+            estado: null,
+        },
+        {
+            label: "Operacion de " + operacion.operacion,
+            to: "/",
+            estado: "active",
+        },
+    ]
 
     return (
     <div>
         <Header titulo={`${operacion.operacion} de productos`}>ID Operacion: {operacion.id}</Header>
+        <IndiceNavegacion navegacion={nav_operacion} />
         <section className="d-flex justify-content-between mb-3">
-            <search className="w-50 input-group">
-                <span className="input-group-text"><BsSearch /></span>
-                <input onChange={handleFilter} type="search" className="form-control" placeholder="Buscar variante/modelo" />
-            </search>
+            {!operacion.autorizo && (
+                <search className="w-50 input-group">
+                    <span className="input-group-text"><BsSearch /></span>
+                    <input onChange={handleFilter} type="search" className="form-control" placeholder="Buscar variante/modelo" />
+                </search>
+            )}
             <div className="d-flex gap-1">
-                <button onClick={() => setOpenModal(true)} className="btn btn-success fw-bold">Guardar entrada</button>
-                <button className="btn btn-primary fw-bold">Autorizar entrada</button>
+                {!operacion.autorizo && (
+                    <>
+                        <button onClick={() => setOpenModal(true)} className="btn btn-success fw-bold">Guardar {operacion.operacion}</button>
+                        <button onClick={autorizarOperacion} className="btn btn-primary fw-bold">Autorizar {operacion.operacion}</button>
+                    </>
+                )}
             </div>
         </section>
 
@@ -68,7 +95,12 @@ const Operacion = () => {
                         </div>
                     </div>
 
-                    <button className="btn btn-success fw-bold">Listo</button>
+                    <button className="btn btn-success fw-bold">
+
+                        {loadSaveOP ? <Spinner as="span" animation="border" size="sm" role="status" /> : <FaClipboardCheck className="mb-1"/> }                         
+                        <span className="ms-1">{loadSaveOP ? "Cuardando..." : "Guardar"}</span>
+
+                    </button>
                 </form>
             </Modal.Body>
         </Modal>
@@ -76,38 +108,52 @@ const Operacion = () => {
         {/* LINK CONTENIDO DE MOVIMIENTOS */}
 
         <article className="row">
-            <section className="col-4 border-end" style={{maxHeight: "60vh"}}>
-                <table className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Variante/Modelo</th>
-                            <th>Stock actual</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {filtrado.length > 0 ? filtrado.map(producto => (
-                        <tr key={producto.id}>
-                            <td>{producto.variante}</td>
-                            <td className="fw-bold text-muted">{producto.stock}</td>
-                            <td><button className="btn btn-primary" onClick={() => agregarProducto({id_inventario:producto.id})}><FaPlus className="mb-1"/></button></td>
-                        </tr>
-                    )): (
-                        <tr>
-                            <td colSpan={3}>No hay resultados</td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </section>
-            <section className="col-8">
+            {!operacion.autorizo && (
+                <section className="col-4 border-end" style={{maxHeight: "60vh"}}>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Variante/Modelo</th>
+                                <th>Stock actual</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {filtrado.length > 0 ? filtrado.map(producto => (
+                            <tr key={producto.id}>
+                                <td>{producto.variante}</td>
+                                <td className="fw-bold text-muted">{producto.stock}</td>
+                                <td><button className="btn btn-primary" onClick={() => agregarProducto({id_inventario:producto.id})}><FaPlus className="mb-1"/></button></td>
+                            </tr>
+                        )): (
+                            <tr>
+                                <td colSpan={3}>No hay resultados</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                </section>
+            )}
+            <section className={`${!operacion.autorizo ? "col-8" : "col-12"}`}>
+                {operacion.autorizo && (
+                    <section>
+                        <h3>Finalizada</h3>
+                        <ul className="list-unstyled">
+                            <li>Autorizado por <b>{operacion.autorizo}</b></li>
+                            <li>Operador <b>{operacion.operador}</b></li>
+                            <li>Proveedor <b>{operacion.proveedor}</b> de la empresa <b>{operacion.empresa}</b></li>
+                            <li><b className="text-upercamelcase">{operacion.documento}</b> con el número {operacion.no_documento}</li>
+                            <li>Operación realizada el día {formatDate({datetime: operacion.fecha}).date} a las {formatDate({datetime: operacion.fecha}).time} horas</li>
+                        </ul>
+                    </section>
+                )}
                 <table className="table table-hover">
                     <thead>
                         <tr>
                             <th>ID Producto</th>
                             <th>Variante/Modelo</th>
                             <th>Cantidad</th>
-                            <th>Accion</th>
+                            {!operacion.autorizo && <th>Accion</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -115,8 +161,14 @@ const Operacion = () => {
                             <tr key={producto.id}>
                                 <td><Link>{producto.id_producto}</Link></td>
                                 <td>{producto.variante}</td>
-                                <td><input onChange={(e) => actualizarProducto(e, {id: producto.id})} type="number" className="form-control" defaultValue={producto.cantidad} /></td>
-                                <td><button className="btn " onClick={() => quitarProducto({id:producto.id})} ><MdOutlineClose className="mb-1 fs-4 text-black-50" /></button></td>
+                                {!operacion.autorizo ? (
+                                    <td><input onChange={(e) => actualizarProducto(e, {id: producto.id})} type="number" className="form-control disabled" defaultValue={producto.cantidad} /></td>
+                                ):(
+                                    <td>{operacion.operacion == "entrada" ? "Se agregaron " + producto.cantidad + " unidades" : "Se removieron " + producto.cantidad + " unidades"}</td>
+                                )}
+                                {!operacion.autorizo && (
+                                    <td><button className="btn " onClick={() => quitarProducto({id:producto.id})} ><MdOutlineClose className="mb-1 fs-4 text-black-50" /></button></td>
+                                )}
                             </tr>
                         )) : (
                             <tr>
