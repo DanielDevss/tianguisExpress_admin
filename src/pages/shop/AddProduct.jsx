@@ -2,21 +2,25 @@ import Swal from "sweetalert2";
 import Header from "../../components/Header";
 import IndiceNavegacion from "../../components/IndiceNavegacion";
 import useProductos from "../../hooks/useProductos";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { nav_nuevoProducto } from "../../utils/navegacionBreadcrumb";
 import { expRegs } from "../../utils/utils";
+import useCategorias from "../../hooks/useCategorias";
 
 const AddProduct = () => {
     
-    const {register, handleSubmit, formState: {errors}} = useForm();
+    const {register, handleSubmit, formState: {errors}, watch} = useForm();
 
     const {crearProducto} = useProductos();
+
+    const { seleccionarCategoria, subcategorias, categorias } = useCategorias();
 
     const handleSubmitForm = (data) => {
 
         const file = data.cover[0];
         const fileName = file.name;
-        const fileExt = fileName.split(".")[fileName.split(".").length - 1];
+        const fileExt = fileName.split(".")[fileName.split(".").length - 1].toLowerCase();
         const fileSize = file.size / 1000000;
 
         console.log(fileExt);
@@ -34,6 +38,22 @@ const AddProduct = () => {
         crearProducto({body: data});
     }
 
+    useEffect(() => {
+        const seleccionarCategoriaPorCampo = () => {
+            const categoria = watch('categoria');
+    
+            if (categoria) {
+                const categoriaSeleccionada = categorias.find(cat => cat.categoria === categoria);
+    
+                if (categoriaSeleccionada) {
+                    seleccionarCategoria(categoriaSeleccionada);
+                }
+            }
+        };
+    
+        seleccionarCategoriaPorCampo();
+    }, [watch, categorias, seleccionarCategoria]);
+    
 
   return (
     <>
@@ -70,9 +90,9 @@ const AddProduct = () => {
                         <label className="fw-bold form-label">Categoría del producto *</label>
                         <select className="form-select" {...register("categoria", {required:true})}>
                             <option value={""}>Selecciona una opción</option>
-                            <option value={"Audio"}>Audio</option>
-                            <option value={"Electronica"}>Electronica</option>
-                            <option value={"Laptops"}>Laptops</option>
+                            {categorias && categorias.map(cat => (
+                                <option key={cat.id} value={cat.categoria}>{cat.categoria}</option>
+                            ))}
                         </select>
                         <span className="text-danger">{errors.categoria?.type==="required" && "Selecciona una categoría"}</span>
                     </div>
@@ -84,9 +104,9 @@ const AddProduct = () => {
                         <label className="fw-bold form-label">Subcategoria del producto *</label>
                         <select className="form-select" {...register("subcategoria", {required:true})}>
                             <option value={""}>Selecciona una opción</option>
-                            <option value={"Bocinas"}>Bocinas</option>
-                            <option value={"Licuadoras"}>Licuadoras</option>
-                            <option value={"Gamers"}>Gamers</option>
+                            {subcategorias && subcategorias.map(sub => (
+                                <option value={sub.subcategoria} key={sub.id}>{sub.subcategoria}</option>
+                            ))}
                         </select>
                         <span className="text-danger">{errors.subcategoria?.type==="required" && "Selecciona una subcategoría"}</span>
                     </div>

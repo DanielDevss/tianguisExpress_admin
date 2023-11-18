@@ -12,7 +12,7 @@ const useProducto = () => {
     const [imagenes, setImagenes] = useState([]);
     const [variantes, setVariantes] = useState([])
     const [estadoUpd, setEstadoUpd] = useState(false);
-    const [pending, setPending] = useState(true);
+    const [pendingImage, setPendingImage] = useState(false);
 
     // LINK DETALLES
 
@@ -55,6 +55,7 @@ const useProducto = () => {
 
     const agregarImagen = (e) => {
         e.preventDefault();
+        setPendingImage(true);
         const formData = new FormData(e.target);
         fetch(`${url}controllers/controllers.images.php?id=${id}`, {
             method: "POST",
@@ -63,6 +64,8 @@ const useProducto = () => {
         .then(response=>response.json())
         .then(data=> {
             console.log(data);
+            e.target.reset()
+            setPendingImage(false);
             obtenerDetalles();
         })
     }
@@ -110,6 +113,7 @@ const useProducto = () => {
         variantes,
         agregarImagen,
         eliminarImagen,
+        pendingImage,
     }
 }
 

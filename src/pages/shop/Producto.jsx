@@ -4,15 +4,17 @@ import useProducto from "../../hooks/useProducto";
 import { nav_producto } from "../../utils/navegacionBreadcrumb";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Modal } from "react-bootstrap";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import "swiper/css"
+import useCategorias from "../../hooks/useCategorias";
 
 const Producto = () => {
 
     const url = import.meta.env.VITE_URL;
     const [openModal, setOpenModal] = useState(false);
-    const {producto, imagenes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd} = useProducto();
+    const {producto, imagenes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd, pendingImage} = useProducto();
+    const { categorias, subcategorias, seleccionarCategoria } = useCategorias()
 
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
@@ -23,6 +25,17 @@ const Producto = () => {
         const formData = new FormData(formulario.current);
         actualizarProducto({body: formData});
     }
+
+    const handleChangeCategorias = (e) => {
+        const categoria = e.target.value;
+        seleccionarCategoria(categorias.filter(cat => cat.categoria === categoria)[0]);
+    }
+
+    useEffect(() => {
+        if(categorias){
+            seleccionarCategoria(categorias.filter(cat => cat.categoria === producto.categoria)[0]);
+        }
+    }, [categorias, producto])
     
   return (
     <>
@@ -47,14 +60,18 @@ const Producto = () => {
                     <legend>Informacion del producto</legend>
                     <div className="col-3 mb-3">
                         <label className="fw-bold form-label" htmlFor="categoria">Categoría</label>
-                        <select name="categoria" id="categoria" className="form-select">
-                            <option value={producto.categoria}>{producto.categoria}</option>
+                        <select onChange={handleChangeCategorias} name="categoria" id="categoria" className="form-select">
+                            {categorias && categorias.map(cat => (
+                                <option selected={cat.categoria === producto.categoria ? true : false} value={cat.categoria} key={cat.categoria}>{cat.categoria}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="col-3 mb-3">
                         <label className="fw-bold form-label">Subcategoría</label>
                         <select name="subcategoria" className="form-select">
-                            <option value={producto.categoria}>{producto.subcategoria}</option>
+                            {subcategorias && subcategorias.map(sub => (
+                                <option selected={producto.subcategoria === sub.subcategoria ? true : false} value={sub.subcategoria} key={sub.id}>{sub.subcategoria}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="col-3 mb-3">
@@ -163,7 +180,7 @@ const Producto = () => {
                     <input type="file" name="image" className="form-control mb-3" />
                     <div className="d-flex gap-1">
                         <button type="button" className="btn btn-secondary">Cancelar</button>
-                        <button className="btn btn-primary">Agregar</button>
+                        <button className={`btn btn-primary ${pendingImage && "btn-secondary disabled"}`}>{pendingImage ? "Agregando..." : "Agregar"}</button>
                     </div>
                 </form>
             </Modal.Body>

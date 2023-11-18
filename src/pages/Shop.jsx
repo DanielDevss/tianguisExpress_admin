@@ -34,7 +34,7 @@ const Shop = () => {
 
         <AccordionItem open={true} titulo={"Estado de ventas"} descripcion={"Revisa cuanto haz vendido y las ventas actuales"}>
 
-          <CardAccordion titulo="Estado de ventas" to="/estados-venta" icono={<FaFileInvoiceDollar />}>
+          <CardAccordion titulo="Estado de ventas" to="/ventas" icono={<FaFileInvoiceDollar />}>
             Revisa el estado de ventas actuales
           </CardAccordion>
 

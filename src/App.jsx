@@ -14,6 +14,8 @@ import Inventario from "./pages/shop/Inventario"
 
 import ShowMails from "./pages/mails/ShowMails"
 import Operacion from "./pages/shop/Operacion"
+import Ventas from "./pages/shop/Ventas"
+import Venta from "./pages/shop/Venta"
 
 
 const App = () => {
@@ -34,9 +36,10 @@ const App = () => {
             <Route path="productos/:id" element={<Producto />} />
             <Route path="inventario" element={<Inventario />} />
             <Route path="inventario/:operacion/:id" element={<Operacion />} />
+            <Route path="ventas" element={<Ventas />} />
+            <Route path="ventas/:id" element={<Venta />} />
             {/* Elemntos de Mailes */}
             <Route path="/mostrar-suscritos/" element={<ShowMails />} />
-
         </Route>
     </Routes>
   

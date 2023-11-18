@@ -2,18 +2,28 @@ import DataTable from "react-data-table-component"
 import useProductos from "../../hooks/useProductos"
 import CustomHeader from "./CustomHeader";
 import { formatPriceMX, formatDate } from "../../utils/utils";
-import { FaTrash, FaArrowUpRightFromSquare, FaStar } from "react-icons/fa6"
+import { FaTrash, FaArrowUpRightFromSquare, FaStar, FaPercent } from "react-icons/fa6"
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import customStyles, { paginationOptions } from "../../utils/themeTables";
 import LoaderContent from "../LoaderContent";
+import { Modal } from "react-bootstrap";
 const url = import.meta.env.VITE_URL;
 
 const TableProductos = () => {
 
-
+    const [modalDescuento, setModalDescuento] = useState(false);
+    const [productoSelect, setProductoSelect] = useState({});
     const [filterText, setFilterText] = useState('');
-    const {productos, eliminarProducto, actualizarEstado, destacarProducto, pending} = useProductos();
+    const {productos, eliminarProducto, actualizarEstado, destacarProducto, pending, crearDescuento} = useProductos();
+
+    const abrirModal = (id) => {
+        const producto = productos.filter(item => item.id === id)[0];
+        setProductoSelect(producto);
+        setModalDescuento(true)
+    };
+    const cerrarModal = () => setModalDescuento(false);
+
 
     const handleEstado = (e, id) => {
         const input = e.target;
@@ -44,6 +54,7 @@ const TableProductos = () => {
         sheetname: "Productos"
     }
 
+        
 
     const columns = [
         {
@@ -64,6 +75,12 @@ const TableProductos = () => {
             name: "Precio",
             selector: (row) => formatPriceMX(row.precio),
             sortable: true
+        },
+        {
+            name: "Descuento",
+            selector: (row) => row.descuento ? row.descuento : 0,
+            sortable: true,
+            cell: (row) => <span>{row.descuento ? row.descuento + " %" : "Sin descuento"}</span>
         },
         {
             name: "Fecha creación",
@@ -88,9 +105,11 @@ const TableProductos = () => {
                 const id = row.id
                 return (
                     <div className="btn-group">
-                        <button onClick={() => handleDestacar(row.destacar, id)} className={`btn btn-outline-primary ${row.destacar ==
-                             1 && 'active'}`}><FaStar className="mb-1" />
+                        <button onClick={() => handleDestacar(row.destacar, id)} className={`btn btn-outline-primary ${(row.destacar ==
+                             1) && 'active'}`}><FaStar className="mb-1" />
                         </button>
+                        
+                        <button onClick={() => abrirModal(id)} className={`btn btn-outline-primary ${row.descuento && "active btn-outline-success" }`}><FaPercent className="mb-1" /></button>
                         
                         <button onClick={() => eliminarProducto(id)} className="btn btn-outline-primary"><FaTrash className="mb-1" /></button>
                         
@@ -116,7 +135,21 @@ const TableProductos = () => {
 
 
     return (
-        <DataTable progressPending={pending} progressComponent={<LoaderContent />} paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover searchable title={<CustomHeader downloadOptions={optionsDownload} searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
+        <>
+            <DataTable progressPending={pending} progressComponent={<LoaderContent />} paginationComponentOptions={paginationOptions} customStyles={customStyles} highlightOnHover searchable title={<CustomHeader downloadOptions={optionsDownload} searchOnChange={searchOnChange} btnAdd={true} toBtnAdd={"/nuevo-producto"} placeholder="Buscar producto" title="Productos registrados" />} columns={columns} pagination data={filteredProductos} />
+            <Modal show={modalDescuento} onHide={cerrarModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Agregar descuento</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={(e) => crearDescuento(e, productoSelect.id)} noValidate>
+                        <label className="form-label fw-bold">Descuento:</label>
+                        <input defaultValue={productoSelect.descuento} type="number" name="descuento" placeholder="Ingresa el porcentaje" className="form-control"/>
+                        <button className="btn btn-success mt-3">Aplicar</button>
+                    </form>
+                </Modal.Body>
+            </Modal>
+        </>
     )
 }
 

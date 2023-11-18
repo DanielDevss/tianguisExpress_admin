@@ -103,6 +103,29 @@ const useProductos = () => {
         })
     }
 
+    // LINK DESCUENTO 
+
+    const crearDescuento = (e, id) => {
+        e.preventDefault();
+        console.log(id)
+        const formData = new FormData(e.target);
+        console.log(Object.fromEntries(formData))
+        axios.post(`${url}controllers/controllers.productos.php?descuento&id=${id}`, formData).then(response => {
+            console.log(response)
+            obtenerProductos()
+            if(response.status == 200){
+                Swal.fire({
+                    title: "Listo",
+                    text: "Le haz agregado un descuento a este producto",
+                    icon: "success",
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+        })
+
+    }
+
     return {
         productos,
         pending,
@@ -110,6 +133,7 @@ const useProductos = () => {
         eliminarProducto,
         actualizarEstado,
         destacarProducto,
+        crearDescuento,
     }
 }
 
