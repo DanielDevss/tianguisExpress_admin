@@ -23,5 +23,6 @@ export const formatPriceMX = (monto) => {
 
 export const expRegs = {
     codigos     : /^[a-zA-Z0-9.-]+$/,
-    parrafos    : /^[a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ\s.,;:'"¡!¿?()¿&@$#%*-]+$/u
+    parrafos    : /^[a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ\s.,;:'"¡!¿?()¿&@$#%*-]+$/u,
+    password    : /^(?=.*[A-Z])(?=.*[-_.])(?=.*\d)[a-zA-Z\d-_.]{8,}$/,
 }

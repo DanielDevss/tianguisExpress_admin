@@ -36,17 +36,20 @@ const Productos = () => {
                         <div className="col-6">
                             <div className="card">
                                 <header className="card-header">
-                                    <h3 className="text-uppercase h5">Categorías</h3>
+                                    <h3 className="text-uppercase h5 mb-0">Categorías</h3>
                                 </header>
                                 <div className="card-body">
                                     <form onSubmit={handleSubmitC(handleSubmitCat)}>
-                                        <label className="form-label">Agrega una nueva categoría</label>
+                                        <label className="form-label h5">Agrega una nueva categoría</label>
                                         <div className="input-group">
                                             <input placeholder="Ingresa una categoría" type="text" className="form-control" {...registerCat("categoria",{required:true}) } />
                                             <button className="btn btn-primary">Agregar</button>
                                         </div>
                                         {errrosCat.categoria?.type==="required" && <span className="d-block text-danger">Agrega el nombre de la categoría</span>}
                                     </form>
+                                    <hr />
+                                    <h4 className="fs-5 mt-3">Selecciona una categoria</h4>
+                                    <p className="text-muted">Selecciona una categoria para ver sus subcategorías en el panel derecho</p>
                                     <ul className="list-group list-group-flush mt-3">
                                         {categorias && categorias.map(item => (
                                             <li key={item.id} onClick={() => seleccionarCategoria(item)} className="list-group-item list-group-item-action">
@@ -62,20 +65,24 @@ const Productos = () => {
                         <div className="col-6">
                             <div className="card">
                                 <header className="card-header">
-                                    <h3 className="text-uppercase h5">Subcategorías</h3>
+                                    <h3 className="text-uppercase h5 mb-0">Subcategorías</h3>
                                 </header>
                                 <div className="card-body">
                                     {categoriaSelect.categoria ? (
                                         <>
                                             <form onSubmit={handleSubmitS(handleSubmitSub)}>
-                                                <label className="form-label">Ingresa una subcategoria para: {categoriaSelect.categoria}</label>
+                                                <label className="form-label h5">Agrega una subcategoría nueva para: {categoriaSelect.categoria}</label>
                                                 <div className="input-group">
                                                     <input placeholder="Ingresa la subcategoria" type="text" className="form-control" {...registerSub("subcategoria",{required:true}) } />
                                                     <button className="btn btn-primary">Agregar</button>
                                                 </div>
                                                 {errrosSub.subcategoria?.type==="required" && <span className="d-block text-danger">Agrega el nombre de la categoría</span>}
                                             </form>
+                                            <hr />
                                             {subcategorias.length > 0 ? (
+                                                <>
+                                                <h4 className="fs-5">Gestiona las subcategorìas</h4>
+                                                <p className="text-muted">Puedes editarlas o eliminarlas</p>
                                                 <ul className="list-group list-group-flush mt-3">
                                                     {subcategorias && subcategorias.map(item => (
                                                         <li key={item.id} onClick={() => seleccionarCategoria(item)} className="list-group-item list-group-item-action">
@@ -83,6 +90,7 @@ const Productos = () => {
                                                         </li>
                                                     ))}
                                                 </ul>
+                                                </>
                                             ) : <span className="mt-3 d-block text-center text-muted">No se han añadido subcategorias en {categoriaSelect.categoria}</span>}
                                         </>
                                     ) : "Selecciona primero una categoría"}

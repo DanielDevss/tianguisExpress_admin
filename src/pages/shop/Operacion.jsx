@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header"
 import useOperaciones from "../../hooks/useOperaciones"
 import useInventario from "../../hooks/useInventario";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {BsSearch} from "react-icons/bs"
 import { Modal } from "react-bootstrap";
 import {useForm} from "react-hook-form"
@@ -11,13 +11,15 @@ import { FaClipboardCheck, FaPlus } from "react-icons/fa";
 import {Spinner} from "react-bootstrap";
 import { formatDate } from "../../utils/utils";
 import IndiceNavegacion from "../../components/IndiceNavegacion";
+import AuthContext from "../../Context/AuthContext";
 
 const Operacion = () => {
     const [filtroText, setFiltroText] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const {inventario} = useInventario();
     const {agregarProducto, productosMovimiento, actualizarProducto, quitarProducto, actualizarOperacion, operacion, autorizarOperacion, loadSaveOP} = useOperaciones()
-    
+    const {rol, nombre} = useContext(AuthContext);
+
     const handleFilter = (e) => setFiltroText(e.target.value);
 
     const filtrado = inventario.filter(model => model.variante.toLowerCase().includes(filtroText));
@@ -58,7 +60,7 @@ const Operacion = () => {
                 {!operacion.autorizo && (
                     <>
                         <button onClick={() => setOpenModal(true)} className="btn btn-success fw-bold">Guardar {operacion.operacion}</button>
-                        <button onClick={autorizarOperacion} className="btn btn-primary fw-bold">Autorizar {operacion.operacion}</button>
+                        {rol === "superadmin" && <button onClick={autorizarOperacion} className="btn btn-primary fw-bold">Autorizar {operacion.operacion}</button>}
                     </>
                 )}
             </div>
@@ -72,7 +74,7 @@ const Operacion = () => {
                 <form onSubmit={handleSubmit(formSubmit)}>
                     <div className="mb-3">
                         <label className={`form-label ${errors.operador?.type === "required" && "text-danger fw-bold"}`}>Tu nombre *</label>
-                        <input defaultValue={operacion.operador} className="form-control" placeholder="Ingresa tu nombre" type="text" {...register("operador",{required: true})} />
+                        <input defaultValue={operacion.operador ? operacion.operador : nombre} disabled className="form-control" placeholder="Ingresa tu nombre" type="text" {...register("operador",{required: true})} />
                     </div>
                     <div className="mb-3 d-flex gap-1">
                         <div className="flex-grow-1">

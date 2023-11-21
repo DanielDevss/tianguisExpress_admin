@@ -2,10 +2,10 @@ import Header from '../components/Header'
 import userMale from '../assets/icons/userMale.png'
 
 const Account = () => {
+
   return (
     <>
       <Header titulo={"Ajuste de cuenta"}>Gestiona los accesos de tu cuenta</Header>
-      
       <article className='card p-3 shadow-sm mb-3'>
 
         <header className='d-flex flex-column flex-md-row align-items-center w-100'>

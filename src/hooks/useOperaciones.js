@@ -1,10 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import AuthContext from "../Context/AuthContext";
 const url = import.meta.env.VITE_URL + 'controllers/';
 const useOperaciones = () => {
 
+    const { nombre } = useContext(AuthContext);
     const {id} = useParams();
     const [productosMovimiento, setProductosMovimiento] = useState([]);  
     const [operaciones, setOperaciones] = useState([]);
@@ -12,6 +14,7 @@ const useOperaciones = () => {
     const [pending, setPending] = useState(true);
     const [loadSaveOP, setLoadSaveOP] = useState(false);
     const navigate = useNavigate();
+
 
     // SECTION OPERACION
 
@@ -62,7 +65,7 @@ const useOperaciones = () => {
             if(respuesta.isConfirmed){
 
                 const formData = new FormData();
-                formData.append("nombre", "Juan Bartolome");
+                formData.append("nombre", nombre);
                 formData.append("operacion", operacion.operacion);
                 axios.post(`${url}controllers.operaciones.php?autorizar&id=${id}`, formData).then(respuesta => console.log(respuesta));
                 

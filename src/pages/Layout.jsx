@@ -1,8 +1,15 @@
-import { Outlet } from "react-router-dom"
-import Sidebar from "../components/Sidebar"
+import { Navigate, Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import { useContext } from "react";
+import AuthContext from "../Context/AuthContext";
 
 const Layout = () => {
 
+  const { token } = useContext(AuthContext);
+
+  if(!token) {
+    return <Navigate to={"/login"}/>
+  }
 
   return (
     <div className="d-flex h-100 bg-body" data-bs-theme="light">

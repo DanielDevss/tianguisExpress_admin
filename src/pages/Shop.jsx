@@ -1,8 +1,8 @@
-// import { Link } from 'react-router-dom'
 import AccordionItem from '../components/AccordionItem'
 import CardAccordion from '../components/CardAccordion'
 
 import {FaRegSquarePlus, FaWarehouse, FaBagShopping, FaFileInvoiceDollar} from 'react-icons/fa6'
+import {IoTicket} from "react-icons/io5"
 
 const Shop = () => {
   return (
@@ -32,10 +32,14 @@ const Shop = () => {
         </AccordionItem>
 
 
-        <AccordionItem open={true} titulo={"Estado de ventas"} descripcion={"Revisa cuanto haz vendido y las ventas actuales"}>
+        <AccordionItem open={true} titulo={"Contenido de ventas"} descripcion={"Revisa cuanto haz vendido y las ventas actuales"}>
 
           <CardAccordion titulo="Estado de ventas" to="/ventas" icono={<FaFileInvoiceDollar />}>
             Revisa el estado de ventas actuales
+          </CardAccordion>
+
+          <CardAccordion titulo="Cupones de descuento" to="/cupones" icono={<IoTicket />}>
+            Agrega o quita cupones de descuento
           </CardAccordion>
 
         </AccordionItem>

@@ -8,16 +8,21 @@ import { useState, useRef, useEffect } from "react";
 
 import "swiper/css"
 import useCategorias from "../../hooks/useCategorias";
+import { FaCheck, FaTrash } from "react-icons/fa6";
 
 const Producto = () => {
 
     const url = import.meta.env.VITE_URL;
     const [openModal, setOpenModal] = useState(false);
-    const {producto, imagenes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd, pendingImage} = useProducto();
+    const [openModalVariantes, setOpenModalVariantes] = useState(false);
+    const {producto, imagenes, variantes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd, pendingImage} = useProducto();
     const { categorias, subcategorias, seleccionarCategoria } = useCategorias()
 
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
+    
+    const handleOpenModalV = () => setOpenModalVariantes(true);
+    const handleCloseModalV = () => setOpenModalVariantes(false);
 
     const formulario = useRef();
 
@@ -44,10 +49,16 @@ const Producto = () => {
 
             <IndiceNavegacion className={"mb-0"} navegacion={nav_producto} />
 
-            <button onClick={handleFormSubmit} className={`btn btn-primary ${estadoUpd && "disabled"}`}>
-                <span className={`${estadoUpd && "d-none"}`}>Aplicar cambios</span>
-                <span className={`spinner-border spinner-border-sm ${!estadoUpd && "d-none"}`}></span>
-            </button>
+            <div className="d-flex gap-1">
+                <button onClick={handleOpenModalV} className={`btn btn-outline-primary fw-bold ${estadoUpd && "disabled"}`}>
+                    <span>Ver variantes</span>
+                </button>
+
+                <button onClick={handleFormSubmit} className={`btn fw-bold btn-primary ${estadoUpd && "disabled"}`}>
+                    <span className={`${estadoUpd && "d-none"}`}>Aplicar cambios</span>
+                    <span className={`spinner-border spinner-border-sm ${!estadoUpd && "d-none"}`}></span>
+                </button>
+            </div>
 
         </div>
 
@@ -170,6 +181,7 @@ const Producto = () => {
             </form>
         </article>
 
+        {/* LINK MODAL AGREGAR IMAGENES */}
         <Modal show={openModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>Agregar Imagen</Modal.Title>
@@ -183,6 +195,34 @@ const Producto = () => {
                         <button className={`btn btn-primary ${pendingImage && "btn-secondary disabled"}`}>{pendingImage ? "Agregando..." : "Agregar"}</button>
                     </div>
                 </form>
+            </Modal.Body>
+        </Modal>
+
+        {/* LINK MODAL VARIANTES */}
+        <Modal show={openModalVariantes} onHide={handleCloseModalV}>
+            <Modal.Header closeButton>
+                <Modal.Title>Variantes del producto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className="input-group">
+                    <input type="text" placeholder="Ingresa una variante nueva aquí" name="variante" className="form-control" />
+                    <button className="btn btn-primary">Agregar</button>
+                </div>
+                <hr />
+                <ul className="list-group list-group-flush">
+                    {variantes && variantes.map(item => (
+                        <li key={item.id} className="list-group-item d-flex justify-content-between">
+                            <form className="d-flex justify-content-between w-100 gap-1">
+                                <input type="text" className="form-control fw-bold" defaultValue={item.variante} />
+                                <div className="btn-group">
+                                    <button type="button" className="btn btn-outline-danger"><FaTrash className="mb-1"/></button>
+                                    <button type="submit" className="btn btn-outline-primary"><FaCheck className="mb-1"/></button>
+                                </div>
+                            </form>
+                        </li>
+                    ))}
+
+                </ul>
             </Modal.Body>
         </Modal>
     </>
