@@ -18,7 +18,7 @@ const Layout = () => {
 
       <section className="contenido">
       
-        <main className="p-3">
+        <main className="p-3 bg-bg-body-tertiary" style={{minHeight: "100vh"}}>
 
           <Outlet />
         

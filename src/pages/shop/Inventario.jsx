@@ -6,7 +6,9 @@ import { StyleSheetManager } from "styled-components"
 import { Tab, Tabs } from "react-bootstrap"
 import { nav_inventario } from "../../utils/navegacionBreadcrumb"
 import useInventario from "../../hooks/useInventario"
-
+import { FaWarehouse } from "react-icons/fa6"
+import { IoIosLogOut, IoIosLogIn } from "react-icons/io";
+import { PiArrowsDownUpBold } from "react-icons/pi";
 const Inventario = () => {
 
   const {crearEntrada, crearSalida} = useInventario();
@@ -17,15 +19,15 @@ const Inventario = () => {
       <IndiceNavegacion navegacion={nav_inventario} />
       
       <Tabs variant="tabs">
-        <Tab eventKey={"stock"} title="Inventario">
+        <Tab eventKey={"stock"} title={<span className="fw-bold link-dark px-4"><FaWarehouse className="mb-1" /> Inventario</span>}>
           <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
             <TableInventario sortActive={true} />
           </StyleSheetManager>
         </Tab>
-        <Tab eventKey={"movimientos"} title="Moviemientos">
+        <Tab eventKey={"movimientos"} title={<span className="fw-bold link-dark px-4"><PiArrowsDownUpBold className="mb-1" /> Movimientos</span>}>
           <div className="d-flex gap-1 my-3">
-            <button className="btn btn-primary fw-bold" onClick={crearEntrada}>Crear entrada</button>
-            <button className="btn btn-primary fw-bold" onClick={crearSalida}>Crear salida</button>
+            <button className="btn btn-primary fw-bold" style={{width: "200px"}} onClick={crearEntrada}><IoIosLogIn className="fs-4" /> Crear entrada</button>
+            <button className="btn btn-danger fw-bold" style={{width: "200px"}} onClick={crearSalida}><IoIosLogOut className="fs-4" /> Crear salida</button>
           </div>
 
           <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>

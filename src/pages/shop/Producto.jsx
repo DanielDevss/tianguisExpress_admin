@@ -15,7 +15,7 @@ const Producto = () => {
     const url = import.meta.env.VITE_URL;
     const [openModal, setOpenModal] = useState(false);
     const [openModalVariantes, setOpenModalVariantes] = useState(false);
-    const {producto, imagenes, variantes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd, pendingImage} = useProducto();
+    const {producto, imagenes, variantes, agregarImagen, eliminarImagen, actualizarProducto, estadoUpd, pendingImage, agregarModelo, quitarModelo} = useProducto();
     const { categorias, subcategorias, seleccionarCategoria } = useCategorias()
 
     const handleOpenModal = () => setOpenModal(true);
@@ -204,18 +204,18 @@ const Producto = () => {
                 <Modal.Title>Variantes del producto</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="input-group">
+                <form onSubmit={(e) => agregarModelo(e, "agregar")} className="input-group">
                     <input type="text" placeholder="Ingresa una variante nueva aquí" name="variante" className="form-control" />
                     <button className="btn btn-primary">Agregar</button>
-                </div>
+                </form>
                 <hr />
                 <ul className="list-group list-group-flush">
                     {variantes && variantes.map(item => (
                         <li key={item.id} className="list-group-item d-flex justify-content-between">
-                            <form className="d-flex justify-content-between w-100 gap-1">
-                                <input type="text" className="form-control fw-bold" defaultValue={item.variante} />
+                            <form onSubmit={(e) => agregarModelo(e, "update", item.id)} className="d-flex justify-content-between w-100 gap-1">
+                                <input type="text" name="variante" className="form-control fw-bold" defaultValue={item.variante} />
                                 <div className="btn-group">
-                                    <button type="button" className="btn btn-outline-danger"><FaTrash className="mb-1"/></button>
+                                    <button onClick={() => quitarModelo(item.id)} type="button" className="btn btn-outline-danger"><FaTrash className="mb-1"/></button>
                                     <button type="submit" className="btn btn-outline-primary"><FaCheck className="mb-1"/></button>
                                 </div>
                             </form>

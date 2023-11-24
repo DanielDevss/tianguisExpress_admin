@@ -51,6 +51,50 @@ const useProducto = () => {
         })
     }
     
+    // LINK MODELOS
+
+    const agregarModelo = (e, accion, idupdate) => {
+        e.preventDefault()
+        console.log("agregando")
+        const formData = new FormData(e.target);
+        axios.post(`${url}controllers/controllers.inventario.php?action=${accion}&id=${idupdate ? idupdate : id}`, formData)
+        .then(response => {
+            if(response.status === 200){
+                if(accion==="update"){
+                    Swal.fire({
+                        title: "Atualizado",
+                        text: "Variante actualizada correctamente",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+                obtenerDetalles();
+            }
+        }).catch(err => console.log(err));
+    }
+
+    const quitarModelo = (id) => {
+        Swal.fire({
+            title: "¿Eliminar variante/modelo?",
+            text: "Si deseas eliminar el modelo da click en eliminar",
+            icon: "question",
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Eliminar (Si)",
+            cancelButtonText: "Cancelar (No)"           
+        }).then(respuesta => {
+            if(respuesta.isConfirmed){
+                axios.post(`${url}controllers/controllers.inventario.php?action=delete&id=${id}`).then(response => {
+                    if(response.status == 200){
+                        console.log(response);
+                        obtenerDetalles();
+                    }
+                })
+            }
+        })
+    }
+
     // LINK AGREGAR IMAGEN
 
     const agregarImagen = (e) => {
@@ -114,6 +158,9 @@ const useProducto = () => {
         agregarImagen,
         eliminarImagen,
         pendingImage,
+
+        agregarModelo,
+        quitarModelo,
     }
 }
 

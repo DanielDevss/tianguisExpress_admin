@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa6";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { formatPriceMX } from "../../utils/utils";
 
 const TableGuias = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -28,6 +29,11 @@ const TableGuias = () => {
         {
             name: "Peso Máximo",
             selector: (row) => `${row.peso_max} kg`,
+        },
+        {
+            name: "Monto",
+            selector: (row) => row.monto,
+            cell: (row) => formatPriceMX(row.monto),
         },
         {
             name: "Tiempo de entrega",
@@ -79,7 +85,7 @@ const TableGuias = () => {
                             {errors.peso_min?.type==="required" && <span className="text-danger d-block mt-1">Este campo es obligatorio</span>}
                         </div>
                         <div className="col-md-6 mb-3">
-                            <label className="fw-bold form-label">* Precio por peso</label>
+                            <label className="fw-bold form-label">* Monto</label>
                             <div className="input-group">
                                 <span className="input-group-text">$</span>
                                 <input {...register("monto", {register:true})} type="number" className="form-control" placeholder="Que precio tiene esta guía" />

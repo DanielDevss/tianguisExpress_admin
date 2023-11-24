@@ -14,6 +14,7 @@ export const formatDate = ({datetime}) => {
 }
 
 export const formatPriceMX = (monto) => {
+    monto = parseFloat(monto);
     return monto.toLocaleString("es-MX", {
         style: "currency",
         currency: "MXN",

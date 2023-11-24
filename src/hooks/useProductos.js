@@ -126,6 +126,41 @@ const useProductos = () => {
 
     }
 
+
+    const eliminarDescuento = (id, cb) => {
+        axios.post(`${url}controllers/controllers.productos.php?descuento&id=${id}`).then(response => {
+            if(response.status == 200){
+                Swal.fire({
+                    title: "Descuento eliminado",
+                    text: "Haz removido el descuento de este producto",
+                    showConfirmButton: false,
+                    icon: "success",
+                    timer: 2000
+                });
+            }else{
+                Swal.fire({
+                    title: "Error",
+                    text: "Ocurrio un error al eliminar el descuento",
+                    showConfirmButton: false,
+                    icon: "error",
+                    timer: 2000
+                });
+            }
+            cb();
+            obtenerProductos()
+        }).catch(err => {
+            console.log(err);
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrio un error al eliminar el descuento",
+                showConfirmButton: false,
+                icon: "error",
+                timer: 2000
+            });
+            cb();
+        })
+    }
+
     return {
         productos,
         pending,
@@ -134,6 +169,7 @@ const useProductos = () => {
         actualizarEstado,
         destacarProducto,
         crearDescuento,
+        eliminarDescuento,
     }
 }
 

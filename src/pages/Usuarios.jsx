@@ -2,7 +2,7 @@ import Header from '../components/Header'
 import { Modal } from 'react-bootstrap'
 import { useState } from 'react'
 import useAuth from "../hooks/useAuth.js"
-
+import TableAccounts from '../components/tables/TableAccounts.jsx'
 
 const Usuarios = () => {
 
@@ -27,13 +27,18 @@ const Usuarios = () => {
 
     return (
     <div>
-        <Header titulo={"Gestión de usuarios"}>Crea enlaces de registro, aumenta los roles, elimina los usuarios</Header>
-        <article className='card shadow-sm'>
+      <Header titulo={"Gestión de usuarios"}>Crea enlaces de registro, aumenta los roles, elimina los usuarios</Header>
+      
+      <article className='card shadow-sm mb-4'>
         <section className='card-body'>
           <p className=''>Crea un link de registro y compartelo con la persona que se integrara a la administraciòn de Tianguis Express.</p>
           <button onClick={showModalLink} className='btn btn-primary fw-bold'>Crear link de registro</button>
         </section>
       </article>
+      
+      <TableAccounts />
+
+      {/* LINK MODAL DE NUEVO LINK */}
 
       <Modal size='lg' show={modalLink} onHide={closeModalLink}>
         <Modal.Header closeButton>

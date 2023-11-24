@@ -6,7 +6,7 @@ import customStyles, {paginationOptions} from "../../utils/themeTables.js"
 import useVentas from "../../hooks/useVentas.js"
 import { Link } from "react-router-dom"
 
-import { FaArrowUpRightFromSquare, FaStripeS } from "react-icons/fa6";
+import { FaEye, FaStripeS } from "react-icons/fa6";
 import { formatPriceMX } from "../../utils/utils.js"
 
 
@@ -38,28 +38,26 @@ const TablaVentas = () => {
 
     const columns = [
         {
+            name: "Fecha de venta",
+            sortable: true,
+            selector: (row) => row.fecha_venta
+        },
+        {
             name: "ID de venta",
             selector: (row) => row.id
-        },
-        {
-            name: "Payment Intent",
-            selector: (row) => row.payment_intent_id
-        },
-        {
-            name: "Monto vendido",
-            sortable: true,
-            selector: (row) => row.monto_total,
-            cell: (row) => <span>{formatPriceMX(row.monto_total)} MX</span>
         },
         {
             name: "Cantidad",
             sortable: true,
             selector: (row) => row.cantidad_total_productos,
-            cell: (row) => <span>{row.cantidad_total_productos + (row.cantidad_total_productos > 1 ? " productos" : " producto")}</span>
+            maxWidth: "116px"
         },
         {
-            name: "Cupon",
-            selector: (row) => row.cupon_activo == 0 ? "No" : "Si"
+            name: "Monto vendido",
+            sortable: true,
+            selector: (row) => row.monto_total,
+            cell: (row) => <span>{formatPriceMX(row.monto_total)}</span>,
+            minWidth: "150px"
         },
         {
             name: "Correo del cliente",
@@ -68,19 +66,15 @@ const TablaVentas = () => {
             cell: (row) => <Link className="nav-link link-primary text-truncate">{row.correo}</Link>
         },
         {
-            name: "Fecha de venta",
-            sortable: true,
-            selector: (row) => row.fecha_venta
-        },
-        {
             name: "Estado",
-            cell: (row) => <span className={`badge ${row.payment_intent_id ? "text-bg-success" : "text-bg-warning"}`}>{row.payment_intent_id ? 'Procesado' : 'Inconcluso'}</span> 
+            cell: (row) => <span className={`badge ${row.payment_intent_id ? "text-bg-success" : "text-bg-warning"}`}>{row.payment_intent_id ? 'Procesado' : 'Inconcluso'}</span>,
+            maxWidth: "100px"
         },
         {
             name: "Acción",
             cell: (row) => (
                 <div className="btn-group">
-                    <Link className="btn btn-outline-primary" to={"/ventas/" + row.id}><FaArrowUpRightFromSquare className="mb-1" /></Link>
+                    <Link className="btn btn-outline-primary" to={"/ventas/" + row.id}><FaEye className="mb-1" /></Link>
                     <Link className="btn btn-outline-primary" to={"/"}><FaStripeS className="mb-1" /></Link>
                 </div>
             )
@@ -92,13 +86,13 @@ const TablaVentas = () => {
         (venta) =>{
 
             const correo = venta.correo ? venta.correo.toLowerCase() : '';
-            const paymentIntentId = venta.payment_intent_id ? venta.payment_intent_id.toLowerCase() : '';
+            // const paymentIntentId = venta.payment_intent_id ? venta.payment_intent_id.toLowerCase() : '';
             const estado = venta.payment_intent_id ? "procesado" : 'inconcluso';
             const idVenta = venta.id ? venta.id.toLowerCase() : '';
             const fecha = venta.fecha_venta ? venta.fecha_venta.toLowerCase() : '';
             const monto = venta.monto_total ? `${venta.monto_total}` : '';
             
-            return correo.includes(filterTable) || paymentIntentId.includes(filterTable) || idVenta.includes(filterTable) || fecha.includes(filterTable) || monto.includes(filterTable) || estado.includes(filterTable);
+            return correo.includes(filterTable) || idVenta.includes(filterTable) || fecha.includes(filterTable) || monto.includes(filterTable) || estado.includes(filterTable);
         }
     );
 

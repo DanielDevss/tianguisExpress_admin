@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const url = import.meta.env.VITE_URL + "controllers/";
 
@@ -16,6 +17,25 @@ const useInventario = () => {
             setInventario(response.data);
             setTimeout(setPending(false), 1000)
         });
+    }
+
+    // LINK ACTUALIZAR STOCK MINIMO
+    const actualizarStockMinimo = (e, id) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        console.log(Object.fromEntries(formData))
+        axios.post(`${url}controllers.inventario.php?id=${id}`, formData).then(response => {
+            console.log(response.data)
+            if(response.status == 200){
+                Swal.fire({
+                    title: "Actualizado",
+                    text: "El stock minimo ha sido actualizado",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+        })
     }
 
     // LINK CREAR ENTRADA  
@@ -41,7 +61,7 @@ const useInventario = () => {
             console.error(err);
         })
     }
-    
+
     // LINK INICIALIZADORES
     useEffect(() => {
         obtenerInventario();
@@ -49,6 +69,7 @@ const useInventario = () => {
 
     return {
         inventario,
+        actualizarStockMinimo,
         crearEntrada,
         crearSalida,
         pending,

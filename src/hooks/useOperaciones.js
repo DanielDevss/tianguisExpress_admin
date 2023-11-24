@@ -13,6 +13,7 @@ const useOperaciones = () => {
     const [operacion, setOperacion] = useState({});
     const [pending, setPending] = useState(true);
     const [loadSaveOP, setLoadSaveOP] = useState(false);
+    const [operacionesMov, setOperacionesMov] = useState([]);
     const navigate = useNavigate();
 
 
@@ -77,6 +78,7 @@ const useOperaciones = () => {
                 })
 
                 obtenerOperacion();
+                obtenerOperaciones();
                 navigate("/inventario");
 
             }else{
@@ -161,7 +163,11 @@ const useOperaciones = () => {
         .then(resultado => setOperacion(resultado.data)).catch(err => console.error(err)); 
 
         axios.get(`${url}controllers.operaciones.php`)
-        .then(resultado => {setOperaciones(resultado.data);setPending(false)}).catch(err => console.error(err));
+        .then(resultado => {
+            setOperaciones(resultado.data);
+            setOperacionesMov(resultado.data.filter(item => item.operacion !== "venta"));
+            setPending(false)}
+        ).catch(err => console.error(err));
 
     }, [id]);
 
@@ -172,6 +178,7 @@ const useOperaciones = () => {
         actualizarProducto,
         operacion,
         operaciones,
+        operacionesMov,
         pending,
         actualizarOperacion,
         autorizarOperacion,

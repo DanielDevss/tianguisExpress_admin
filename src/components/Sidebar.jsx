@@ -1,16 +1,17 @@
-import {NavLink} from "react-router-dom"
-import {MdManageAccounts, MdPointOfSale} from "react-icons/md";
-import {FaPaintRoller, FaUsersGear, FaTruckRampBox} from "react-icons/fa6";
-import AuthContext from "../Context/AuthContext";
+import { NavLink } from "react-router-dom"
+import { MdManageAccounts, MdPointOfSale } from "react-icons/md";
+import { TbCategory } from "react-icons/tb";
+import { FaUsersGear, FaTruckRampBox, FaBoxesStacked, FaCartShopping, FaPeopleGroup } from "react-icons/fa6";
+import { FaDoorOpen } from "react-icons/fa";
 import { useContext } from "react";
+import AuthContext from "../Context/AuthContext";
 
 import Logotipo from "../assets/images/logotipo.png";
-import { FaDoorOpen } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const Sidebar = () => {
 
-    const {logout, rol} = useContext(AuthContext)
+    const { logout, rol } = useContext(AuthContext)
     const handleLogout = () => {
         Swal.fire({
             title: "¿Salir del Dashboard?",
@@ -21,8 +22,8 @@ const Sidebar = () => {
             cancelButtonText: "Cancelar (No)",
             confirmButtonText: "Salir a login (SI)"
         }).then(response => {
-            const {isConfirmed} = response;
-            if(isConfirmed){
+            const { isConfirmed } = response;
+            if (isConfirmed) {
                 logout();
             }
         })
@@ -47,9 +48,29 @@ const Sidebar = () => {
                 </NavLink>
             )}
 
-            <NavLink to="tienda" className="nav-link my-2 p-2">
+            <NavLink to="clientes" className="nav-link my-2 p-2">
+                <FaPeopleGroup className="fs-3" />
+                <span className='ms-2'>Catálogo de clientes</span>
+            </NavLink>
+
+            <NavLink to="ventas-menu" className="nav-link my-2 p-2">
                 <MdPointOfSale className="fs-3" />
-                <span className='ms-2'>Tienda y ventas</span>
+                <span className='ms-2'>Ventas</span>
+            </NavLink>
+
+            <NavLink to="productos-menu" className="nav-link my-2 p-2">
+                <FaCartShopping className="fs-3" />
+                <span className='ms-2'>Productos</span>
+            </NavLink>
+
+            <NavLink to="categorias" className="nav-link my-2 p-2 d-flex align-items-center">
+                <TbCategory className="fs-3" />
+                <span className='ms-2'>Categorías y subcategorías</span>
+            </NavLink>
+
+            <NavLink to="inventario" className="nav-link my-2 p-2">
+                <FaBoxesStacked className="fs-3" />
+                <span className='ms-2'>Inventario</span>
             </NavLink>
 
             <NavLink to="guias" className="nav-link my-2 p-2">
@@ -57,10 +78,10 @@ const Sidebar = () => {
                 <span className='ms-2'>Guías de envío</span>
             </NavLink>
             
-            <NavLink to="contenido" className="nav-link my-2 p-2">
+            {/* <NavLink to="contenido" className="nav-link my-2 p-2">
                 <FaPaintRoller className="fs-3" />
                 <span className='ms-2'>Modificar contenido</span>
-            </NavLink>
+            </NavLink> */}
         
         </div>
 

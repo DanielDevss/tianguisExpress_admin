@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header"
 import useOperaciones from "../../hooks/useOperaciones"
 import useInventario from "../../hooks/useInventario";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {BsSearch} from "react-icons/bs"
 import { Modal } from "react-bootstrap";
 import {useForm} from "react-hook-form"
@@ -17,12 +17,13 @@ const Operacion = () => {
     const [filtroText, setFiltroText] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const {inventario} = useInventario();
+    const [listaOpciones, setListaOpciones] = useState([]);
     const {agregarProducto, productosMovimiento, actualizarProducto, quitarProducto, actualizarOperacion, operacion, autorizarOperacion, loadSaveOP} = useOperaciones()
     const {rol, nombre} = useContext(AuthContext);
 
     const handleFilter = (e) => setFiltroText(e.target.value);
 
-    const filtrado = inventario.filter(model => model.variante.toLowerCase().includes(filtroText));
+    const filtrado = listaOpciones.filter(model => model.variante.toLowerCase().includes(filtroText));
     const {register, formState:{errors}, handleSubmit} = useForm();
     const handleCloseModal = () => setOpenModal(false);
 
@@ -44,6 +45,11 @@ const Operacion = () => {
             estado: "active",
         },
     ]
+
+    useEffect(() => {
+        let nuevoArrayInventario = inventario.filter(producto => !productosMovimiento.some(operacion => operacion.id_inventario === producto.id));
+        setListaOpciones(nuevoArrayInventario)
+    }, [productosMovimiento, inventario]);
 
     return (
     <div>
@@ -74,7 +80,7 @@ const Operacion = () => {
                 <form onSubmit={handleSubmit(formSubmit)}>
                     <div className="mb-3">
                         <label className={`form-label ${errors.operador?.type === "required" && "text-danger fw-bold"}`}>Tu nombre *</label>
-                        <input defaultValue={operacion.operador ? operacion.operador : nombre} disabled className="form-control" placeholder="Ingresa tu nombre" type="text" {...register("operador",{required: true})} />
+                        <input defaultValue={operacion.operador ? operacion.operador : nombre} readOnly className="form-control" placeholder="Ingresa tu nombre" type="text" {...register("operador",{required: true})} />
                     </div>
                     <div className="mb-3 d-flex gap-1">
                         <div className="flex-grow-1">
