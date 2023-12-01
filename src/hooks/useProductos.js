@@ -92,24 +92,86 @@ const useProductos = () => {
             console.log(respuesta)
         })
     }
-
+    
+    // LINK TEMPORADA
+    
+    const actualizarTemporada = ({temporada, id}) => {
+        axios.post(`${url}controllers/controllers.productos.php?temporada&activo=${temporada}&id=${id}`)
+        .then(respuesta => {
+            obtenerProductos();
+            setTimeout(() => {
+                Swal.fire({
+                    toast: true,
+                    text: (temporada == 1) ? "Producto agregado a temporada" : "Producto removido de temporada",
+                    showConfirmButton: false,
+                    backdrop: false,
+                    timer: 1500,
+                    position: "top",
+                    padding: 0,
+                    background: (temporada == 1) ? "#00933e" : "#fff401",
+                    color: (temporada == 1) ? "#fff" : "#161616",
+                })
+            }, 500)
+            console.log(respuesta);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+    
     // LINK DESTACAR
 
     const destacarProducto = ({destacar, id}) => {
         axios.post(`${url}controllers/controllers.productos.php?destacar=${destacar}&id=${id}`)
         .then(respuesta => {
             obtenerProductos();
+            Swal.fire({
+                toast: true,
+                text: (destacar == 1) ? "Producto agregado a destacados" : "Producto removido de destacados",
+                showConfirmButton: false,
+                backdrop: false,
+                timer: 1500,
+                position: "top",
+                padding: 0,
+                background: (destacar == 1) ? "#00933e" : "#fff401",
+                color: (destacar == 1) ? "#fff" : "#161616",
+            })
             console.log(respuesta)
         })
     }
 
     // LINK DESCUENTO 
 
-    const crearDescuento = (e, id) => {
+    const crearDescuento = (e, id, closeModal) => {
         e.preventDefault();
-        console.log(id)
         const formData = new FormData(e.target);
-        console.log(Object.fromEntries(formData))
+        const data = Object.fromEntries(formData);
+        
+        if(data.descuento > 99) {
+            Swal.fire({
+                title: "Descuento invalido",
+                text: "No puedes agregar descuentos mayores a 99%",
+                icon: "warning",
+                confirmButtonText: "Entendido",
+            })
+            
+            return;
+        }
+        if(data.descuento < 1) {
+            Swal.fire({
+                title: "Descuento invalido",
+                text: "No puedes agregar descuentos menores al 1%",
+                icon: "warning",
+                confirmButtonText: "Entendido",
+            })
+
+            return;
+        }
+
+        closeModal();
+
+        console.table(data);
+
         axios.post(`${url}controllers/controllers.productos.php?descuento&id=${id}`, formData).then(response => {
             console.log(response)
             obtenerProductos()
@@ -167,6 +229,7 @@ const useProductos = () => {
         crearProducto,
         eliminarProducto,
         actualizarEstado,
+        actualizarTemporada,
         destacarProducto,
         crearDescuento,
         eliminarDescuento,

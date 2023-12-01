@@ -12,6 +12,9 @@ import Swal from "sweetalert2";
 const Sidebar = () => {
 
     const { logout, rol } = useContext(AuthContext)
+
+    console.log(rol);
+
     const handleLogout = () => {
         Swal.fire({
             title: "¿Salir del Dashboard?",
@@ -41,17 +44,17 @@ const Sidebar = () => {
                 <span className='ms-2'>Ajustes de cuenta</span>
             </NavLink>
 
-            {rol==="superadmin" && (
+            {rol === "superadmin" && (
                 <NavLink to="usuarios" className="nav-link my-2 p-2">
                     <FaUsersGear className="fs-3" />
                     <span className='ms-2'>Usuarios</span>
                 </NavLink>
             )}
 
-            <NavLink to="clientes" className="nav-link my-2 p-2">
+            {/* <NavLink to="clientes" className="nav-link my-2 p-2">
                 <FaPeopleGroup className="fs-3" />
                 <span className='ms-2'>Catálogo de clientes</span>
-            </NavLink>
+            </NavLink> */}
 
             <NavLink to="ventas-menu" className="nav-link my-2 p-2">
                 <MdPointOfSale className="fs-3" />
@@ -73,10 +76,10 @@ const Sidebar = () => {
                 <span className='ms-2'>Inventario</span>
             </NavLink>
 
-            <NavLink to="guias" className="nav-link my-2 p-2">
+            {/* <NavLink to="guias" className="nav-link my-2 p-2">
                 <FaTruckRampBox className="fs-3" />
                 <span className='ms-2'>Guías de envío</span>
-            </NavLink>
+            </NavLink> */}
             
             {/* <NavLink to="contenido" className="nav-link my-2 p-2">
                 <FaPaintRoller className="fs-3" />

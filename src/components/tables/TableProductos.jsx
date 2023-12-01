@@ -18,7 +18,7 @@ const TableProductos = () => {
     const [modalDescuento, setModalDescuento] = useState(false);
     const [productoSelect, setProductoSelect] = useState({});
     const [filterText, setFilterText] = useState('');
-    const {productos, eliminarProducto, actualizarEstado, destacarProducto, pending, crearDescuento, eliminarDescuento} = useProductos();
+    const {productos, actualizarTemporada, eliminarProducto, actualizarEstado, destacarProducto, pending, crearDescuento, eliminarDescuento} = useProductos();
 
     const abrirModal = (id) => {
         const producto = productos.filter(item => item.id === id)[0];
@@ -32,6 +32,13 @@ const TableProductos = () => {
         const input = e.target;
         const estado = input.checked ? "activo" : "inactivo";
         actualizarEstado({estado, id});
+    }
+
+    const handleTemporada = (e, id) => {
+        const input = e.target;
+        const temporada = input.checked ? 1 : 0;
+        actualizarTemporada({id: id, temporada: temporada})
+        
     }
 
     const productosModificados = productos.map(producto => {
@@ -90,7 +97,6 @@ const TableProductos = () => {
 
     const columns = [
         {
-            name: "Imagen",
             cell: (row) => <img src={`${url}${row.cover}`} className="rounded-circle m-3 border shadow-sm" width="50" />,
             maxWidth: "75px"
         },
@@ -125,15 +131,22 @@ const TableProductos = () => {
             cell: (row) => <span>{row.descuento ? row.descuento + " %" : "No"}</span>
         },
         {
-            name: "Publico",
+            name: "Swiches",
             cell: (row) => {
                 return(
-                    <div className="form-check m-auto form-switch">
-                        <input onInput={(e) => handleEstado(e, row.id)} type="checkbox" defaultChecked={row.estado === "activo" ? true : false} className="form-check-input" />
+                    <div className="d-flex flex-column">
+                        <div className="form-check form-switch">
+                            <label className="input-check-label">Público</label>
+                            <input onInput={(e) => handleEstado(e, row.id)} type="checkbox" defaultChecked={row.estado === "activo" ? true : false} className="form-check-input" />
+                        </div>
+                        <div className="form-check form-switch">
+                            <label className="input-check-label">Temporada</label>
+                            <input onInput={(e) => handleTemporada(e, row.id)} type="checkbox" defaultChecked={row.temporada === 1 ? true : false} className="form-check-input" />
+                        </div>
                     </div>
                 )
             },
-            maxWidth: "120px",
+            maxWidth: "150px",
             sortable: true,
         },
         {
@@ -163,11 +176,11 @@ const TableProductos = () => {
                     <Modal.Title>Agregar descuento</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={(e) => crearDescuento(e, productoSelect.id)} noValidate>
+                    <form onSubmit={(e) => crearDescuento(e, productoSelect.id, cerrarModal)} noValidate>
                         <label className="form-label fw-bold">Descuento:</label>
-                        <input defaultValue={productoSelect.descuento} type="number" name="descuento" placeholder="Ingresa el porcentaje" className="form-control"/>
+                        <input max={99} maxLength={2} defaultValue={productoSelect.descuento} type="number" name="descuento" placeholder="Ingresa el porcentaje" className="form-control"/>
                         <div className="d-flex gap-1">
-                            <button type="button" className="btn btn-danger mt-3" onClick={() => eliminarDescuento(productoSelect.id, cerrarModal)}>Quitar</button>
+                            {productoSelect.descuento && <button type="button" className="btn btn-danger mt-3" onClick={() => eliminarDescuento(productoSelect.id, cerrarModal)}>Quitar</button>}
                             <button className="btn btn-success mt-3">Aplicar</button>
                         </div>
                     </form>

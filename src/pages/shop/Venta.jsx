@@ -2,6 +2,7 @@ import Header from "../../components/Header";
 import { Link } from "react-router-dom";
 import useVentas from "../../hooks/useVentas"
 import { formatDate, formatPriceMX } from "../../utils/utils";
+import { FaMapLocationDot, FaClipboardUser, FaBagShopping } from "react-icons/fa6";
 import { Tabs, Tab } from "react-bootstrap";
 const Venta = () => {
     const {venta, productosVendidos} = useVentas();
@@ -15,25 +16,25 @@ const Venta = () => {
         </Header>
 
         <Tabs variant="tabs" className="">
-            <Tab eventKey={"Detalles"} title={<span className="fw-bold text-black">Detalles de compra</span>}>
+            <Tab eventKey={"Detalles"} title={<span className="fw-bold text-black"><FaBagShopping className="mb-1 fs-5" /> Detalles de compra</span>}>
                 <ul className="list-group mt-3 list-group-flush">
                     <li className="list-group-item"><b>ID de venta: </b><br />{venta.id}</li>
                     <li className="list-group-item"><b>Payment Intent ID: </b><a target="_blank" rel="noreferrer" className="nav-link link-primary" href={`mailto:${venta.correo}`}>{venta.payment_intent_id}</a></li>
                     <li className="list-group-item"><b>Client Secret: </b><br />{venta.client_secret}</li>
                     <li className="list-group-item"><b>Descuento por cúpon: </b><br />{venta.cupon_descuento > 0 ? formatPriceMX(venta.monto_descuento) + " MX" : "No se ingreso cúpon"}</li>
-                    <li className="list-group-item"><b>Cantidad de pago: </b><br />{formatPriceMX(venta.monto_total)} MX</li>
+                    <li className="list-group-item"><b>Cantidad de pago: </b><br />Subtotal: {formatPriceMX(venta.monto_total)} <br />Costo envio: {formatPriceMX(venta.costo_envio || 0)} <br /> Monto total: {formatPriceMX(venta.costo_envio + venta.monto_total)}</li>
                     <li className="list-group-item"><b>Variedad de venta: </b><br />{venta.variedad_productos == 1 ? venta.variedad_productos + " producto" : venta.variedad_productos + " productos diferentes"}</li>
                     <li className="list-group-item"><b>Productos comprados: </b><br />{venta.cantidad_total_productos} {venta.cantidad_total_productos > 1 ? "productos" : "producto"}</li>
                 </ul>
             </Tab>
-            <Tab eventKey={"Cliente"} title={<span className="fw-bold text-black">Información del cliente</span>}>
+            <Tab eventKey={"Cliente"} title={<span className="fw-bold text-black"><FaClipboardUser className="mb-1 fs-5" /> Información del cliente</span>}>
                 <ul className="list-group mt-3 list-group-flush">
                     <li className="list-group-item"><b>Cliente: </b><br />{venta.nombre}</li>
                     <li className="list-group-item"><b>Correo: </b><a className="nav-link link-primary" href={`mailto:${venta.correo}`}>{venta.correo}</a></li>
                     <li className="list-group-item"><b>Télefono: </b>{venta.telefono}</li>
                 </ul>
             </Tab>
-            <Tab eventKey={"Direccion"} title={<span className="fw-bold text-black">Dirección de envío</span>}>
+            <Tab eventKey={"Direccion"} title={<span className="fw-bold text-black"><FaBagShopping className="mb-1 fs-5" /> Dirección de envío</span>}>
                 <ul className="list-group mt-3 list-group-flush">
                     <li className="list-group-item"><b>Calle y número: </b><br />{`${venta.calle} No.${venta.no_ext}, Int.${venta.no_int ? venta.no_int : "S/N"}`}</li>
                     <li className="list-group-item"><b>Colonia y CP: </b>{venta.colonia}, CP.{venta.cp}</li>

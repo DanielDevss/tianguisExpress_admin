@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 const url = `${import.meta.env.VITE_URL}controllers/controllers.ventas.php`;
 const useVentas = () => {
+    
     const [ventas, setVentas] = useState([]);
     const [productosVendidos, setProductosVendidos] = useState([]);
     const [venta, setVenta] = useState({});
