@@ -23,7 +23,11 @@ const Venta = () => {
                     <li className="list-group-item"><b>Client Secret: </b><br />{venta.client_secret}</li>
                     <li className="list-group-item"><b>Descuento por cúpon: </b><br />{venta.cupon_descuento > 0 ? formatPriceMX(venta.monto_descuento) + " MX" : "No se ingreso cúpon"}</li>
                     <li className="list-group-item"><b>Cantidad de pago: </b><br />Subtotal: {formatPriceMX(venta.monto_total)} <br />Costo envio: {formatPriceMX(venta.costo_envio || 0)} <br /> Monto total: {formatPriceMX(venta.costo_envio + venta.monto_total)}</li>
-                    <li className="list-group-item"><b>Variedad de venta: </b><br />{venta.variedad_productos == 1 ? venta.variedad_productos + " producto" : venta.variedad_productos + " productos diferentes"}</li>
+                    <li className="list-group-item d-flex flex-column">
+                        <b className="mb-1">Número de Guía</b>
+                        <p className="mb-0 lh-1">{venta.numero_envio ? venta.numero_envio : "No se genero una guía"}</p>
+                        <a download={"Etiqueta de envío.pdf"} rel="noreferrer" target="_blank" href={venta.etiqueta_url}>{venta.etiqueta_url ? "Descargar etiqueta" : "No se genero una etiqueta"}</a>
+                    </li>
                     <li className="list-group-item"><b>Productos comprados: </b><br />{venta.cantidad_total_productos} {venta.cantidad_total_productos > 1 ? "productos" : "producto"}</li>
                 </ul>
             </Tab>
@@ -34,7 +38,7 @@ const Venta = () => {
                     <li className="list-group-item"><b>Télefono: </b>{venta.telefono}</li>
                 </ul>
             </Tab>
-            <Tab eventKey={"Direccion"} title={<span className="fw-bold text-black"><FaBagShopping className="mb-1 fs-5" /> Dirección de envío</span>}>
+            <Tab eventKey={"Direccion"} title={<span className="fw-bold text-black"><FaMapLocationDot className="mb-1 fs-5" /> Dirección de envío</span>}>
                 <ul className="list-group mt-3 list-group-flush">
                     <li className="list-group-item"><b>Calle y número: </b><br />{`${venta.calle} No.${venta.no_ext}, Int.${venta.no_int ? venta.no_int : "S/N"}`}</li>
                     <li className="list-group-item"><b>Colonia y CP: </b>{venta.colonia}, CP.{venta.cp}</li>

@@ -20,6 +20,7 @@ const TablaVentas = () => {
             "Payment Intent ID" : item.payment_intent_id,
             "Monto vendido" : formatPriceMX(item.monto_total),
             "Monto de envío" : formatPriceMX(item.costo_envio),
+            "Número de Guía" : item.numero_envio,
             "Variedad de compra" : item.variedad_productos > 1 ? `${item.variedad_productos} distintos` : `Solo uno`,
             "Cantidad de compra" : `${item.cantidad_total_productos + (item.cantidad_total_productos > 1 ? " productos" : " producto")}`,
             "Cupon" : item.cupon_activo ? item.cupon_descuento : "Sin cupon",
@@ -66,6 +67,12 @@ const TablaVentas = () => {
             selector: (row) => row.costo_envio || 0,
             cell: (row) => <span>{formatPriceMX(row.costo_envio || 0)}</span>,
             minWidth: "130px"
+        },
+        {
+            name: "Número de Guía",
+            sortable: true,
+            selector: (row) => row.numero_envio ? `${row.numero_envio}` : "Sin Número",
+            cell: (row) => <a href={row.etiqueta_url} download={"Etiqueta de Envío.pdf"} rel="noreferrer" target="_blank" >{row.etiqueta_url ? "Descargar etiqueta" : "No se genero"}</a>
         },
         {
             name: "Correo del cliente",
